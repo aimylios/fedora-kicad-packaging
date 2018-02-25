@@ -1,22 +1,19 @@
 #!/bin/sh
+
 set -e
 set -x
-if [ -d kicad.bzr ]; then
-	cd kicad.bzr
-	git fetch origin
-	git reset --hard origin/master
-	cd ..
-else 
-	git clone https://git.launchpad.net/kicad kicad.bzr
-fi
 
-if [ -d kicad-library.bzr ]; then
-	cd kicad-library.bzr
-	git fetch origin
-	git reset --hard origin/master
-	cd ..
-else
-	git clone https://github.com/KiCad/kicad-library.git kicad-library.bzr
+if [ -d kicad ]; then
+    cd kicad
+    git fetch origin
+    git reset --hard origin/master
+    git checkout tags/5.0.0-rc1
+    cd ..
+else 
+    git clone https://git.launchpad.net/kicad
+    cd kicad
+    git checkout tags/5.0.0-rc1
+    cd ..
 fi
 
 if [ -d kicad-i18n ]; then
@@ -28,25 +25,47 @@ else
     git clone https://github.com/KiCad/kicad-i18n.git
 fi
 
-#TODO(mangelajo): pull the new doc builds
-#if [ -d kicad-doc.bzr ]; then
-#	cd kicad-doc.bzr
-#	bzr update 
-#	cd ..
-#else
-#	bzr branch --stacked lp:~kicad-developers/kicad/doc kicad-doc.bzr
-#fi
+if [ -d kicad-doc ]; then
+    cd kicad-doc
+    git fetch origin
+    git reset --hard origin/master
+    cd ..
+else
+    git clone https://github.com/KiCad/kicad-doc.git
+fi
 
+if [ -d kicad-templates ]; then
+    cd kicad-templates
+    git fetch origin
+    git reset --hard origin/master
+    cd ..
+else
+    git clone https://github.com/KiCad/kicad-templates.git
+fi
 
-exit 0
+if [ -d kicad-symbols ]; then
+    cd kicad-symbols
+    git fetch origin
+    git reset --hard origin/master
+    cd ..
+else
+    git clone https://github.com/KiCad/kicad-symbols.git
+fi
 
-sed -n 's|.*\${KIGITHUB}/\([^)]*\)).*|\1|p'  kicad-library.bzr/template/fp-lib-table.for-github > footprint.list
+if [ -d kicad-footprints ]; then
+    cd kicad-footprints
+    git fetch origin
+    git reset --hard origin/master
+    cd ..
+else
+    git clone https://github.com/KiCad/kicad-footprints.git
+fi
 
-mkdir -p footprints
-cat footprint.list |while read FP
-	do
-		git clone https://github.com/KiCad/$FP footprints/$FP ||
-			print "$FP missing, possibly gone from GitHub now"
-	done
-
-
+if [ -d kicad-packages3D ]; then
+    cd kicad-packages3D
+    git fetch origin
+    git reset --hard origin/master
+    cd ..
+else
+    git clone https://github.com/KiCad/kicad-packages3D.git
+fi

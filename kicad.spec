@@ -1,0 +1,297 @@
+%global version_suffix rc1
+
+Name:           kicad
+Version:        5.0.0
+Release:        %{version_suffix}%{?dist}
+Epoch:          1
+Summary:        Electronic schematic diagrams and printed circuit board artwork
+
+License:        GPLv3+
+URL:            http://www.kicad-pcb.org
+
+# Source files created with the following scripts ...
+#   kicad-clone.sh ... clone GIT repositories of main, doc, libs, etc.
+#   kicad-export.sh ... export GIT repositories and create tarballs
+Source0:        %{name}-%{version}-%{version_suffix}.tar.gz
+Source1:        %{name}-i18n-%{version}-%{version_suffix}.tar.gz
+Source2:        %{name}-doc-%{version}-%{version_suffix}.tar.gz
+Source3:        %{name}-templates-%{version}-%{version_suffix}.tar.gz
+Source4:        %{name}-symbols-%{version}-%{version_suffix}.tar.gz
+Source5:        %{name}-footprints-%{version}-%{version_suffix}.tar.gz
+Source6:        %{name}-packages3D-%{version}-%{version_suffix}.tar.gz
+
+BuildRequires:  cmake
+BuildRequires:  desktop-file-utils
+BuildRequires:  doxygen
+BuildRequires:  gettext
+BuildRequires:  git
+BuildRequires:  libappstream-glib
+BuildRequires:  swig
+BuildRequires:  boost-devel
+BuildRequires:  compat-wxGTK3-gtk2-devel
+BuildRequires:  glew-devel
+BuildRequires:  glm-devel
+BuildRequires:  libcurl-devel
+BuildRequires:  OCE-devel
+BuildRequires:  openssl-devel
+BuildRequires:  python2-devel
+#BuildRequires:  wxPython-devel
+#BuildRequires:  compat-wxPython3-gtk2
+#BuildRequires:  compat-wxPython3-gtk2-devel
+BuildRequires:  asciidoc
+BuildRequires:  dblatex
+BuildRequires:  po4a
+
+Requires:       boost
+Requires:       compat-wxGTK3-gtk2
+Requires:       electronics-menu
+Requires:       libcurl
+Requires:       OCE-visualization
+Requires:       python2
+#Requires:       wxPython
+
+%description
+Kicad is an EDA software to design electronic schematic
+diagrams and printed circuit board artwork up to 16 layers.
+Kicad is a set of four softwares and a project manager:
+- Kicad: project manager
+- Eeschema: schematic entry
+- Pcbnew: board editor
+- Cvpcb: footprint selector for components used in the circuit design
+- Gerbview: GERBER viewer (photoplotter documents)
+
+%package doc
+Summary:        Documentation for KiCad
+License:        GPLv3+
+BuildArch:      noarch
+
+%description doc
+Documentation for KiCad.
+
+%package templates
+Summary:        Templates for KiCad
+License:        CC-BY-SA
+BuildArch:      noarch
+
+%description templates
+Templates for KiCad.
+
+%package symbols
+Summary:        Schematic symbols for KiCad
+License:        CC-BY-SA
+BuildArch:      noarch
+
+%description symbols
+Schematic symbols for KiCad.
+
+%package footprints
+Summary:        Footprints for KiCad
+License:        CC-BY-SA
+BuildArch:      noarch
+
+%description footprints
+Footprints for KiCad.
+
+%package packages3D
+Summary:        3D models for KiCad
+License:        CC-BY-SA
+BuildArch:      noarch
+
+%description packages3D
+3D models for KiCad.
+
+
+%prep
+
+%setup -q -n %{name}-%{version}-%{version_suffix} -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
+
+
+%build
+
+# compat-wxGTK3-gtk2-devel is now merged with wxGTK3-devel and uses a single wx-config
+%if 0%{?fedora} > 27
+%global wx_config wx-config
+%else
+%global wx_config wx-config-3.0-gtk2
+%endif
+
+# KiCad application
+%cmake \
+    -DUSE_WX_GRAPHICS_CONTEXT=OFF \
+    -DUSE_WX_OVERLAY=OFF \
+    -DKICAD_SCRIPTING=ON \
+    -DKICAD_SCRIPTING_MODULES=ON \
+    -DKICAD_SCRIPTING_WXPYTHON=OFF \
+    -DKICAD_SCRIPTING_ACTION_MENU=ON \
+    -DKICAD_USE_OCE=ON \
+    -DKICAD_INSTALL_DEMOS=ON \
+    -DBUILD_GITHUB_PLUGIN=ON \
+    -DKICAD_SPICE=OFF \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DwxWidgets_CONFIG_EXECUTABLE=%{_bindir}/%{wx_config} \
+    .
+# workaround to get WXPYTHON_VERSION set in config.h
+%{__make} rebuild_cache
+# end workaround
+%make_build
+
+# Localization
+mkdir %{name}-i18n-%{version}-%{version_suffix}/build
+pushd %{name}-i18n-%{version}-%{version_suffix}/build
+%cmake \
+    -DKICAD_I18N_UNIX_STRICT_PATH=ON \
+    ..
+%make_build
+popd
+
+# Documentation (english only, HTML only)
+mkdir %{name}-doc-%{version}-%{version_suffix}/build
+pushd %{name}-doc-%{version}-%{version_suffix}/build
+%cmake \
+    -DSINGLE_LANGUAGE=en \
+    -DBUILD_FORMATS=html \
+    ..
+%make_build
+popd
+
+# Templates
+pushd %{name}-templates-%{version}-%{version_suffix}/
+%cmake
+%make_build
+popd
+
+# Symbol libraries
+pushd %{name}-symbols-%{version}-%{version_suffix}/
+%cmake
+%make_build
+popd
+
+# Footprint libraries
+pushd %{name}-footprints-%{version}-%{version_suffix}/
+%cmake
+%make_build
+popd
+
+# 3D packages
+pushd %{name}-packages3D-%{version}-%{version_suffix}/
+%cmake
+%make_build
+popd
+
+
+%install
+
+# KiCad application
+%make_install
+%{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}
+
+# Localization
+pushd %{name}-i18n-%{version}-%{version_suffix}/build
+%make_install
+popd
+
+# Desktop integration
+for desktopfile in %{buildroot}%{_datadir}/applications/*.desktop ; do
+    desktop-file-install \
+    --dir %{buildroot}%{_datadir}/applications \
+    --remove-category Development \
+    --delete-original \
+    ${desktopfile}
+done
+
+# Documentation
+pushd %{name}-doc-%{version}-%{version_suffix}/build
+%make_install
+popd
+
+# Templates
+pushd %{name}-templates-%{version}-%{version_suffix}/
+%make_install
+popd
+
+# Symbol libraries
+pushd %{name}-symbols-%{version}-%{version_suffix}/
+%make_install
+popd
+
+# Footprint libraries
+pushd %{name}-footprints-%{version}-%{version_suffix}/
+%make_install
+popd
+
+# 3D packages
+pushd %{name}-packages3D-%{version}-%{version_suffix}/
+%make_install
+popd
+
+%find_lang %{name}
+
+
+%check
+appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata.xml
+
+
+%post
+touch --no-create %{_datadir}/icons/hicolor || :
+touch --no-create %{_datadir}/mime/packages &> /dev/null || :
+update-desktop-database &> /dev/null || :
+
+
+%postun
+if [ $1 -eq 0 ]
+then
+    touch --no-create %{_datadir}/icons/hicolor || :
+    gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+    touch --no-create %{_datadir}/mime/packages &> /dev/null || :
+    update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
+fi
+update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
+
+
+%posttrans
+gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
+
+
+%files -f %{name}.lang
+%{_bindir}/*
+%{_libdir}/%{name}/*
+%{_libdir}/libkicad_3dsg.so*
+%{_prefix}/lib/python2.7/site-packages/*
+%{_datadir}/%{name}/demos/*
+%{_datadir}/%{name}/scripting/*
+%{_datadir}/%{name}/template/kicad.pro
+%{_datadir}/appdata/*.xml
+%{_datadir}/applications/*.desktop
+%{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
+%{_datadir}/icons/hicolor/*/apps/*.*
+%{_datadir}/mime/packages/*.xml
+
+%files doc
+%{_docdir}/%{name}/*.txt
+%{_docdir}/%{name}/help/*
+%{_docdir}/%{name}/scripts/*
+
+%files templates
+%exclude %{_datadir}/%{name}/template/fp-lib-table
+%exclude %{_datadir}/%{name}/template/sym-lib-table
+%exclude %{_datadir}/%{name}/template/kicad.pro
+%{_datadir}/%{name}/template/*
+
+%files symbols
+%{_datadir}/%{name}/library/*.dcm
+%{_datadir}/%{name}/library/*.lib
+%{_datadir}/%{name}/template/sym-lib-table
+
+%files footprints
+%{_datadir}/%{name}/modules/*.pretty
+%{_datadir}/%{name}/template/fp-lib-table
+
+%files packages3D
+%{_datadir}/%{name}/modules/packages3d/*.3dshapes
+
+
+%changelog
+* Sun Feb 25 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1
+- Initial release for stable builds
+- Loosely based on https://github.com/KiCad/fedora-packaging
