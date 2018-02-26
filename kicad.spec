@@ -2,8 +2,7 @@
 
 Name:           kicad
 Version:        5.0.0
-Release:        %{version_suffix}%{?dist}
-Epoch:          1
+Release:        %{version_suffix}.1%{?dist}
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
 License:        GPLv3+
@@ -292,6 +291,6 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
-* Sun Feb 25 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1
+* Mon Feb 26 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1.1
 - Initial release for stable builds
 - Loosely based on https://github.com/KiCad/fedora-packaging
