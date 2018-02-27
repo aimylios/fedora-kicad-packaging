@@ -2,7 +2,8 @@
 
 Name:           kicad
 Version:        5.0.0
-Release:        %{version_suffix}.1%{?dist}
+Release:        %{version_suffix}.2%{?dist}
+Epoch:          1
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
 License:        GPLv3+
@@ -63,6 +64,7 @@ Kicad is a set of four softwares and a project manager:
 Summary:        Documentation for KiCad
 License:        GPLv3+
 BuildArch:      noarch
+Requires:       kicad >= 5.0.0
 
 %description doc
 Documentation for KiCad.
@@ -71,6 +73,7 @@ Documentation for KiCad.
 Summary:        Templates for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
+Requires:       kicad >= 5.0.0
 
 %description templates
 Templates for KiCad.
@@ -79,6 +82,7 @@ Templates for KiCad.
 Summary:        Schematic symbols for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
+Requires:       kicad >= 5.0.0
 
 %description symbols
 Schematic symbols for KiCad.
@@ -87,6 +91,7 @@ Schematic symbols for KiCad.
 Summary:        Footprints for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
+Requires:       kicad >= 5.0.0
 
 %description footprints
 Footprints for KiCad.
@@ -95,6 +100,7 @@ Footprints for KiCad.
 Summary:        3D models for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
+Requires:       kicad >= 5.0.0
 
 %description packages3D
 3D models for KiCad.
@@ -291,6 +297,11 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
+* Tue Feb 27 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1.2
+- Add Epoch to allow automatic updates of older installations
+- Make library packages depend on KiCad >= 5.0.0, this will help to avoid
+  incompatibilities with Fedora upstream and nightly builds
+
 * Mon Feb 26 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1.1
 - Initial release for stable builds
 - Loosely based on https://github.com/KiCad/fedora-packaging
