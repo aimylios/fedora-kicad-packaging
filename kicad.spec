@@ -2,7 +2,7 @@
 
 Name:           kicad
 Version:        5.0.0
-Release:        %{version_suffix}.2%{?dist}
+Release:        %{version_suffix}.3%{?dist}
 Epoch:          1
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
@@ -24,7 +24,6 @@ BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
 BuildRequires:  gettext
-BuildRequires:  git
 BuildRequires:  libappstream-glib
 BuildRequires:  swig
 BuildRequires:  boost-devel
@@ -141,19 +140,18 @@ Requires:       kicad >= 5.0.0
 %make_build
 
 # Localization
-mkdir %{name}-i18n-%{version}-%{version_suffix}/build
-pushd %{name}-i18n-%{version}-%{version_suffix}/build
+mkdir %{name}-i18n-%{version}-%{version_suffix}/build/
+pushd %{name}-i18n-%{version}-%{version_suffix}/build/
 %cmake \
     -DKICAD_I18N_UNIX_STRICT_PATH=ON \
     ..
 %make_build
 popd
 
-# Documentation (english only, HTML only)
-mkdir %{name}-doc-%{version}-%{version_suffix}/build
-pushd %{name}-doc-%{version}-%{version_suffix}/build
+# Documentation (HTML only)
+mkdir %{name}-doc-%{version}-%{version_suffix}/build/
+pushd %{name}-doc-%{version}-%{version_suffix}/build/
 %cmake \
-    -DSINGLE_LANGUAGE=en \
     -DBUILD_FORMATS=html \
     ..
 %make_build
@@ -188,10 +186,10 @@ popd
 
 # KiCad application
 %make_install
-%{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}
+%{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Localization
-pushd %{name}-i18n-%{version}-%{version_suffix}/build
+pushd %{name}-i18n-%{version}-%{version_suffix}/build/
 %make_install
 popd
 
@@ -205,7 +203,7 @@ for desktopfile in %{buildroot}%{_datadir}/applications/*.desktop ; do
 done
 
 # Documentation
-pushd %{name}-doc-%{version}-%{version_suffix}/build
+pushd %{name}-doc-%{version}-%{version_suffix}/build/
 %make_install
 popd
 
@@ -276,32 +274,42 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_docdir}/%{name}/*.txt
 %{_docdir}/%{name}/help/*
 %{_docdir}/%{name}/scripts/*
+%license %{name}-doc-%{version}-%{version_suffix}/LICENSE.adoc
 
 %files templates
 %exclude %{_datadir}/%{name}/template/fp-lib-table
 %exclude %{_datadir}/%{name}/template/sym-lib-table
 %exclude %{_datadir}/%{name}/template/kicad.pro
 %{_datadir}/%{name}/template/*
+%license %{name}-templates-%{version}-%{version_suffix}/LICENSE.md
 
 %files symbols
 %{_datadir}/%{name}/library/*.dcm
 %{_datadir}/%{name}/library/*.lib
 %{_datadir}/%{name}/template/sym-lib-table
+%license %{name}-symbols-%{version}-%{version_suffix}/LICENSE.md
 
 %files footprints
 %{_datadir}/%{name}/modules/*.pretty
 %{_datadir}/%{name}/template/fp-lib-table
+%license %{name}-footprints-%{version}-%{version_suffix}/LICENSE.md
 
 %files packages3D
 %{_datadir}/%{name}/modules/packages3d/*.3dshapes
+%license %{name}-packages3D-%{version}-%{version_suffix}/LICENSE.md
 
 
 %changelog
-* Tue Feb 27 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1.2
+* Thu Mar 1 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc1.3
+- Enable all available languages for documentation, not just English
+- Add license files to library packages
+- Remove git from build requirements, it is useless for release builds
+
+* Tue Feb 27 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc1.2
 - Add Epoch to allow automatic updates of older installations
 - Make library packages depend on KiCad >= 5.0.0, this will help to avoid
   incompatibilities with Fedora upstream and nightly builds
 
-* Mon Feb 26 2018 Aimylios <aimylios@gmx.de> - 5.0.0-rc1.1
+* Mon Feb 26 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc1.1
 - Initial release for stable builds
 - Loosely based on https://github.com/KiCad/fedora-packaging
