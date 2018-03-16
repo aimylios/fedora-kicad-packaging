@@ -1,0 +1,48 @@
+Name:           kicad-templates
+Version:        REVISION_NUMBER
+Epoch:          100
+Release:        nightly%{?dist}
+Summary:        Templates for KiCad
+
+License:        CC-BY-SA
+URL:            http://kicad-pcb.org/libraries
+
+Source0:        %{name}-%{version}.tar.gz
+
+BuildArch:      noarch
+
+BuildRequires:  cmake
+
+Requires:       kicad
+
+%description
+KiCad is an open-source software tool for the creation of electronic schematic
+diagrams and printed circuit board artwork. This package provides the
+templates which are part of the official KiCad libraries.
+
+%global debug_package %{nil}
+
+%prep
+%setup -q
+
+%build
+mkdir build
+pushd build
+%cmake ..
+%make_build
+popd
+
+%install
+pushd build
+%make_install
+popd
+
+%files
+%{_datadir}/kicad/template/*
+%doc README.md
+%license LICENSE.md
+
+%changelog
+* Fri Mar 16 2018 Aimylios <aimylios@xxx.xx>
+- Initial release for nightly development builds
+- Loosely based on https://github.com/KiCad/fedora-packaging
