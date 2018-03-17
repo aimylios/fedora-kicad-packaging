@@ -3,6 +3,31 @@
 set -e
 set -x
 
+clone_repository()
+{
+    REPOSITORY=$1
+    SOURCE=$2
+    if [ -d $REPOSITORY ]; then
+        echo "Updating $REPOSITORY repository..."
+        cd $REPOSITORY
+        git fetch origin
+        git reset --hard origin/master
+        git checkout HEAD
+        cd ..
+    else
+        if [ "$SOURCE" == "launchpad" ]; then
+            echo "Cloning $REPOSITORY repository from Launchpad..."
+            git clone https://git.launchpad.net/$REPOSITORY
+        else
+            echo "Cloning $REPOSITORY repository from GitHub..."
+            git clone https://github.com/KiCad/$REPOSITORY.git
+        fi
+        cd $REPOSITORY
+        git checkout HEAD
+        cd ..
+    fi
+}
+
 get_current_revision()
 {
     local REPOSITORY=$1
@@ -37,8 +62,6 @@ build_package()
     fi
 }
 
-./kicad-clone.sh
-
 [ -d rpmbuild ] || mkdir rpmbuild
 cd rpmbuild
 [ -d SPECS ] || mkdir SPECS
@@ -46,26 +69,33 @@ cd rpmbuild
 [ -d SRPMS ] || mkdir SRPMS
 cd ..
 
+clone_repository "kicad"      launchpad
+clone_repository "kicad-i18n" github
+clone_repository "kicad-doc"  github
 KICAD_REV=$(get_current_revision kicad)
-export_tarball "kicad"      $KICAD_REV
-export_tarball "kicad-i18n" $KICAD_REV
-export_tarball "kicad-doc"  $KICAD_REV
-build_package  "kicad"      $KICAD_REV
+export_tarball   "kicad"      $KICAD_REV
+export_tarball   "kicad-i18n" $KICAD_REV
+export_tarball   "kicad-doc"  $KICAD_REV
+build_package    "kicad"      $KICAD_REV
 
+clone_repository "kicad-templates" github
 TEMPLATES_REV=$(get_current_revision kicad-templates)
-export_tarball "kicad-templates" $TEMPLATES_REV
-build_package  "kicad-templates" $TEMPLATES_REV
+export_tarball   "kicad-templates" $TEMPLATES_REV
+build_package    "kicad-templates" $TEMPLATES_REV
 
+clone_repository "kicad-symbols" github
 SYMBOLS_REV=$(get_current_revision kicad-symbols)
-export_tarball "kicad-symbols" $SYMBOLS_REV
-build_package  "kicad-symbols" $SYMBOLS_REV
+export_tarball   "kicad-symbols" $SYMBOLS_REV
+build_package    "kicad-symbols" $SYMBOLS_REV
 
+clone_repository "kicad-footprints" github
 FOOTPRINTS_REV=$(get_current_revision kicad-footprints)
-export_tarball "kicad-footprints" $FOOTPRINTS_REV
-build_package  "kicad-footprints" $FOOTPRINTS_REV
+export_tarball   "kicad-footprints" $FOOTPRINTS_REV
+build_package    "kicad-footprints" $FOOTPRINTS_REV
 
+clone_repository "kicad-packages3D" github
 PACKAGES3D_REV=$(get_current_revision kicad-packages3D)
-export_tarball "kicad-packages3D" $PACKAGES3D_REV
-build_package  "kicad-packages3D" $PACKAGES3D_REV
+export_tarball   "kicad-packages3D" $PACKAGES3D_REV
+build_package    "kicad-packages3D" $PACKAGES3D_REV
 
 exit 0
