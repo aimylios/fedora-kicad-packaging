@@ -1,8 +1,8 @@
-%global version_suffix rc1
+%global version_suffix rc2
 
 Name:           kicad
 Version:        5.0.0
-Release:        %{version_suffix}.3%{?dist}
+Release:        %{version_suffix}.1%{?dist}
 Epoch:          1
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
@@ -20,9 +20,13 @@ Source4:        %{name}-symbols-%{version}-%{version_suffix}.tar.gz
 Source5:        %{name}-footprints-%{version}-%{version_suffix}.tar.gz
 Source6:        %{name}-packages3D-%{version}-%{version_suffix}.tar.gz
 
+# https://bugs.launchpad.net/kicad/+bug/1755752
+ExclusiveArch: %{ix86} x86_64 %{arm} aarch64
+
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
+BuildRequires:  gcc-c++
 BuildRequires:  gettext
 BuildRequires:  libappstream-glib
 BuildRequires:  swig
@@ -41,23 +45,16 @@ BuildRequires:  asciidoc
 BuildRequires:  dblatex
 BuildRequires:  po4a
 
-Requires:       boost
-Requires:       compat-wxGTK3-gtk2
 Requires:       electronics-menu
-Requires:       libcurl
-Requires:       OCE-visualization
-Requires:       python2
-#Requires:       wxPython
 
 %description
-Kicad is an EDA software to design electronic schematic
-diagrams and printed circuit board artwork up to 16 layers.
-Kicad is a set of four softwares and a project manager:
-- Kicad: project manager
-- Eeschema: schematic entry
-- Pcbnew: board editor
-- Cvpcb: footprint selector for components used in the circuit design
-- Gerbview: GERBER viewer (photoplotter documents)
+KiCad is an open-source software tool for the creation of electronic schematic
+diagrams and PCB artwork. It does not present any board-size limitation and it
+can handle up to 32 copper layers, 14 technical layers and 4 auxiliary layers.
+Beneath its singular surface, KiCad incorporates an elegant ensemble of the
+following software tools: KiCad (project manager), Eeschema (schematic editor
+and component editor), Pcbnew (circuit board layout editor and footprint
+editor) and GerbView (Gerber viewer).
 
 %package doc
 Summary:        Documentation for KiCad
@@ -95,13 +92,14 @@ Requires:       kicad >= 5.0.0
 %description footprints
 Footprints for KiCad.
 
-%package packages3D
+%package packages3d
 Summary:        3D models for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
+Obsoletes:      kicad-packages3D
 Requires:       kicad >= 5.0.0
 
-%description packages3D
+%description packages3d
 3D models for KiCad.
 
 
@@ -175,7 +173,7 @@ pushd %{name}-footprints-%{version}-%{version_suffix}/
 %make_build
 popd
 
-# 3D packages
+# 3D models
 pushd %{name}-packages3D-%{version}-%{version_suffix}/
 %cmake
 %make_build
@@ -258,8 +256,8 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 %files -f %{name}.lang
 %{_bindir}/*
-%{_libdir}/%{name}/*
 %{_libdir}/libkicad_3dsg.so*
+%{_libdir}/%{name}/plugins/*
 %{_prefix}/lib/python2.7/site-packages/*
 %{_datadir}/%{name}/demos/*
 %{_datadir}/%{name}/scripting/*
@@ -294,12 +292,18 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_datadir}/%{name}/template/fp-lib-table
 %license %{name}-footprints-%{version}-%{version_suffix}/LICENSE.md
 
-%files packages3D
+%files packages3d
 %{_datadir}/%{name}/modules/packages3d/*.3dshapes
 %license %{name}-packages3D-%{version}-%{version_suffix}/LICENSE.md
 
 
 %changelog
+* Tue Jun 12 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc2.1
+- Update to 5.0.0-RC2
+- Rename kicad-packages3D to kicad-packages3d
+- Add ExclusiveArch tags
+- Update dependencies
+
 * Thu Mar 1 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc1.3
 - Enable all available languages for documentation, not just English
 - Add license files to library packages
