@@ -17,6 +17,7 @@ ExclusiveArch:  %{ix86} x86_64 %{arm} aarch64
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
+BuildRequires:  gcc-c++
 BuildRequires:  gettext
 BuildRequires:  git
 BuildRequires:  libappstream-glib
@@ -35,6 +36,7 @@ BuildRequires:  asciidoc
 BuildRequires:  dblatex
 BuildRequires:  po4a
 
+Requires:       electronics-menu
 Requires:       libngspice
 Requires:       python2-wxpython-gtk2
 
@@ -168,8 +170,8 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 %files -f %{name}.lang
 %{_bindir}/*
-%{_libdir}/%{name}/*
 %{_libdir}/libkicad_3dsg.so*
+%{_libdir}/%{name}/plugins/*
 %{python2_sitelib}/*
 %{_datadir}/%{name}/*
 %{_datadir}/appdata/*.xml
@@ -186,6 +188,9 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
+* Thu Jun 14 2018 Aimylios <aimylios@xxx.xx>
+- Backport changes from official nightly
+
 * Fri Mar 16 2018 Aimylios <aimylios@xxx.xx>
 - Initial release for nightly development builds
 - Loosely based on https://github.com/KiCad/fedora-packaging
