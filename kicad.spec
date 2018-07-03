@@ -1,4 +1,4 @@
-%global version_suffix rc2
+%global version_suffix rc3
 
 Name:           kicad
 Version:        5.0.0
@@ -38,11 +38,9 @@ BuildRequires:  libcurl-devel
 BuildRequires:  OCE-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python2-devel
-#BuildRequires:  wxPython-devel
-#BuildRequires:  compat-wxPython3-gtk2
-#BuildRequires:  compat-wxPython3-gtk2-devel
+
+# Documentation
 BuildRequires:  asciidoc
-BuildRequires:  dblatex
 BuildRequires:  po4a
 
 Requires:       electronics-menu
@@ -132,9 +130,6 @@ Requires:       kicad >= 5.0.0
     -DCMAKE_BUILD_TYPE=Release \
     -DwxWidgets_CONFIG_EXECUTABLE=%{_bindir}/%{wx_config} \
     .
-# workaround to get WXPYTHON_VERSION set in config.h
-%{__make} rebuild_cache
-# end workaround
 %make_build
 
 # Localization
@@ -150,6 +145,7 @@ popd
 mkdir %{name}-doc-%{version}-%{version_suffix}/build/
 pushd %{name}-doc-%{version}-%{version_suffix}/build/
 %cmake \
+    -DPDF_GENERATOR=none \
     -DBUILD_FORMATS=html \
     ..
 %make_build
@@ -220,7 +216,7 @@ pushd %{name}-footprints-%{version}-%{version_suffix}/
 %make_install
 popd
 
-# 3D packages
+# 3D models
 pushd %{name}-packages3D-%{version}-%{version_suffix}/
 %make_install
 popd
@@ -232,34 +228,13 @@ popd
 appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata.xml
 
 
-%post
-touch --no-create %{_datadir}/icons/hicolor || :
-touch --no-create %{_datadir}/mime/packages &> /dev/null || :
-update-desktop-database &> /dev/null || :
-
-
-%postun
-if [ $1 -eq 0 ]
-then
-    touch --no-create %{_datadir}/icons/hicolor || :
-    gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
-    touch --no-create %{_datadir}/mime/packages &> /dev/null || :
-    update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
-fi
-update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
-
-
-%posttrans
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
-
-
 %files -f %{name}.lang
 %{_bindir}/*
 %{_libdir}/libkicad_3dsg.so*
 %{_libdir}/%{name}/plugins/*
 %{_prefix}/lib/python2.7/site-packages/*
 %{_datadir}/%{name}/demos/*
+%{_datadir}/%{name}/plugins/*
 %{_datadir}/%{name}/scripting/*
 %{_datadir}/%{name}/template/kicad.pro
 %{_datadir}/appdata/*.xml
@@ -298,6 +273,11 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 
 
 %changelog
+* Tue Jul 3 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc3.1
+- Update to 5.0.0-RC3
+- Update dependencies
+- Remove obsolete post, postun and posttrans scriptlets
+
 * Tue Jun 12 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-rc2.1
 - Update to 5.0.0-RC2
 - Rename kicad-packages3D to kicad-packages3d
