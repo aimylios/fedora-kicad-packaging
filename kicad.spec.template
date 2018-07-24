@@ -32,8 +32,9 @@ BuildRequires:  OCE-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python2-devel
 BuildRequires:  wxPython-GTK2-devel
+
+# Documentation
 BuildRequires:  asciidoc
-BuildRequires:  dblatex
 BuildRequires:  po4a
 
 Requires:       electronics-menu
@@ -83,6 +84,7 @@ documentation for KiCad in multiple languages.
     -DKICAD_SCRIPTING_WXPYTHON=ON \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
     -DKICAD_USE_OCE=ON \
+    -DKICAD_USE_OCC=OFF \
     -DKICAD_INSTALL_DEMOS=ON \
     -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
@@ -168,6 +170,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %changelog
 * Tue Jul 24 2018 Aimylios <aimylios@xxx.xx>
 - remove %post, %postun and %posttrans scriptlets
+- drop dblatex dependency
 
 * Thu Jun 14 2018 Aimylios <aimylios@xxx.xx>
 - Backport changes from official nightly
