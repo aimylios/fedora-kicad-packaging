@@ -55,8 +55,9 @@ build_package()
     local REPOSITORY=$1
     local VERSION=$2
     local NAME=${REPOSITORY,,}
+    FEDVER=$(rpm -E "%{dist}")
     sed s/REVISION_NUMBER/$VERSION/g $NAME.spec.template > ./rpmbuild/SPECS/$NAME.spec
-    if [ ! -f ./rpmbuild/SRPMS/$NAME-$VERSION-nightly.fc27.src.rpm ]; then
+    if [ ! -f ./rpmbuild/SRPMS/$NAME-$VERSION-nightly$FEDVER.src.rpm ]; then
         rm -rf ./rpmbuild/SRPMS/$NAME-r*.src.rpm
         ./kicad-build.sh -n $NAME -c "aimylios/kicad-nightly"
     fi
