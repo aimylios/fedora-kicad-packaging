@@ -120,7 +120,10 @@ popd
 
 # KiCad application
 %make_install
-%{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}
+%{__mkdir} -p %{buildroot}%{_datadir}/%{name}/library/
+%{__mkdir} -p %{buildroot}%{_datadir}/%{name}/modules/
+%{__mkdir} -p %{buildroot}%{_datadir}/%{name}/modules/packages3d/
+%{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Localization
 pushd %{name}-i18n-%{version}/build/
@@ -150,10 +153,10 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 %files -f %{name}.lang
 %{_bindir}/*
+%{_libdir}/%{name}/
 %{_libdir}/libkicad_3dsg.so*
-%{_libdir}/%{name}/plugins/*
 %{python2_sitelib}/*
-%{_datadir}/%{name}/*
+%{_datadir}/%{name}/
 %{_datadir}/appdata/*.xml
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
@@ -161,13 +164,14 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/mime/packages/*.xml
 
 %files doc
-%{_docdir}/%{name}/*.txt
-%{_docdir}/%{name}/help/*
-%{_docdir}/%{name}/scripts/*
+%{_docdir}/%{name}/
 %license %{name}-doc-%{version}/LICENSE.adoc
 
 
 %changelog
+* Wed Aug 8 2018 Aimylios <aimylios@xxx.xx>
+- fix creation and ownership of library directories
+
 * Tue Jul 24 2018 Aimylios <aimylios@xxx.xx>
 - remove %post, %postun and %posttrans scriptlets
 - drop dblatex dependency
