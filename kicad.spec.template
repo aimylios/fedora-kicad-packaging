@@ -11,6 +11,8 @@ Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-i18n-%{version}.tar.gz
 Source2:        %{name}-doc-%{version}.tar.gz
 
+Patch1:         kicad-fix-python-shebang.patch
+
 # https://bugs.launchpad.net/kicad/+bug/1755752
 ExclusiveArch:  %{ix86} x86_64 %{arm} aarch64
 
@@ -64,6 +66,7 @@ documentation for KiCad in multiple languages.
 %prep
 
 %setup -q -a 1 -a 2
+%patch1 -p1
 
 
 %build
@@ -169,6 +172,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Sun Sep 23 2018 Aimylios <aimylios@xxx.xx>
+- fix ambiguous Python shebang
+
 * Wed Aug 8 2018 Aimylios <aimylios@xxx.xx>
 - fix creation and ownership of library directories
 

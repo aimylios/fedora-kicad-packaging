@@ -70,6 +70,8 @@ cd rpmbuild
 [ -d SRPMS ] || mkdir SRPMS
 cd ..
 
+cp ./*.patch ./rpmbuild/SOURCES/
+
 clone_repository "kicad"      launchpad
 clone_repository "kicad-i18n" github
 clone_repository "kicad-doc"  github
