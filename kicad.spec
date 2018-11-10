@@ -1,5 +1,5 @@
 Name:           kicad
-Version:        5.0.0
+Version:        5.0.1
 Release:        1%{?dist}
 Epoch:          2
 Summary:        Electronic schematic diagrams and printed circuit board artwork
@@ -148,7 +148,6 @@ popd
 mkdir %{name}-doc-%{version}/build/
 pushd %{name}-doc-%{version}/build/
 %cmake \
-    -DPDF_GENERATOR=none \
     -DBUILD_FORMATS=html \
     ..
 %make_build
@@ -233,12 +232,17 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 %files -f %{name}.lang
 %{_bindir}/*
+%{_libdir}/%{name}/
 %{_libdir}/libkicad_3dsg.so*
-%{_libdir}/%{name}/plugins/*
 %{_prefix}/lib/python2.7/site-packages/*
-%{_datadir}/%{name}/demos/*
-%{_datadir}/%{name}/plugins/*
-%{_datadir}/%{name}/scripting/*
+%dir %{_datadir}/%{name}/
+%{_datadir}/%{name}/demos/
+%dir %{_datadir}/%{name}/library/
+%dir %{_datadir}/%{name}/modules/
+%dir %{_datadir}/%{name}/modules/packages3d/
+%{_datadir}/%{name}/plugins/
+%{_datadir}/%{name}/scripting/
+%dir %{_datadir}/%{name}/template/
 %{_datadir}/%{name}/template/kicad.pro
 %{_datadir}/appdata/*.xml
 %{_datadir}/applications/*.desktop
@@ -247,9 +251,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/mime/packages/*.xml
 
 %files doc
-%{_docdir}/%{name}/*.txt
-%{_docdir}/%{name}/help/*
-%{_docdir}/%{name}/scripts/*
+%{_docdir}/%{name}/
 %license %{name}-doc-%{version}/LICENSE.adoc
 
 %files templates
@@ -276,6 +278,10 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Sat Nov 10 2018 Aimylios <aimylios@xxx.xx> - 5.0.1-1
+- Update to 5.0.1
+- Fix directory ownership
+
 * Fri Jul 20 2018 Aimylios <aimylios@xxx.xx> - 5.0.0-1
 - Update to 5.0.0
 - Use GTK2 variant of wxWidgets on Fedora 28 and above
