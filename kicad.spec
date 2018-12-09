@@ -1,10 +1,10 @@
 Name:           kicad
-Version:        5.0.1
+Version:        5.0.2
 Release:        1%{?dist}
 Epoch:          2
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
-License:        GPLv3+
+License:        AGPLv3+
 URL:            http://www.kicad-pcb.org
 
 # Source files created with the following scripts ...
@@ -35,6 +35,7 @@ BuildRequires:  compat-wxGTK3-gtk2-devel
 BuildRequires:  glew-devel
 BuildRequires:  glm-devel
 BuildRequires:  libcurl-devel
+BuildRequires:  mesa-libEGL-devel
 BuildRequires:  OCE-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python2-devel
@@ -249,6 +250,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
+%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3
 
 %files doc
 %{_docdir}/%{name}/
@@ -278,6 +280,11 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Sun Dec 9 2018 Aimylios <aimylios@xxx.xx> - 5.0.2-1
+- Update to 5.0.2
+- Update dependencies
+- Change license from GPLv3+ to AGPLv3+
+
 * Sat Nov 10 2018 Aimylios <aimylios@xxx.xx> - 5.0.1-1
 - Update to 5.0.1
 - Fix directory ownership
