@@ -38,7 +38,6 @@ BuildRequires:  asciidoc
 BuildRequires:  po4a
 
 Requires:       electronics-menu
-Requires:       libngspice
 Requires:       python2-wxpython-gtk2
 
 %description
@@ -169,6 +168,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Sun Feb 3 2019 Aimylios <aimylios@xxx.xx>
+- remove explicit libngspice runtime dependency
+
 * Sat Nov 10 2018 Aimylios <aimylios@xxx.xx>
 - remove Python shebang patch
 
