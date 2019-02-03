@@ -4,7 +4,7 @@ Epoch:          100
 Release:        nightly%{?dist}
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
-License:        GPLv3+
+License:        AGPLv3+
 URL:            http://www.kicad-pcb.org
 
 Source0:        %{name}-%{version}.tar.gz
@@ -161,6 +161,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
+%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3
 
 %files doc
 %{_docdir}/%{name}/
@@ -170,6 +171,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %changelog
 * Sun Feb 3 2019 Aimylios <aimylios@xxx.xx>
 - remove explicit libngspice runtime dependency
+- change license from GPLv3+ to AGPLv3+
 
 * Sat Nov 10 2018 Aimylios <aimylios@xxx.xx>
 - remove Python shebang patch
