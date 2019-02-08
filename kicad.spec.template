@@ -67,13 +67,6 @@ documentation for KiCad in multiple languages.
 
 %build
 
-# compat-wxGTK3-gtk2-devel is now merged with wxGTK3-devel and uses a single wx-config
-%if 0%{?fedora} > 27
-%global wx_config wx-config
-%else
-%global wx_config wx-config-3.0-gtk2
-%endif
-
 # KiCad application
 %cmake \
     -DUSE_WX_GRAPHICS_CONTEXT=OFF \
@@ -89,7 +82,6 @@ documentation for KiCad in multiple languages.
     -DKICAD_SPICE=ON \
     -DKICAD_VERSION_EXTRA=REVISION_NUMBER%{?dist} \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DwxWidgets_CONFIG_EXECUTABLE=%{_bindir}/%{wx_config} \
     .
 # workaround to get WXPYTHON_VERSION set in config.h
 %{__make} rebuild_cache
@@ -169,6 +161,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Fri Feb 8 2019 Aimylios <aimylios@xxx.xx>
+- remove support for Fedora 27
+
 * Sun Feb 3 2019 Aimylios <aimylios@xxx.xx>
 - remove explicit libngspice runtime dependency
 - change license from GPLv3+ to AGPLv3+
