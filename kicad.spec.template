@@ -155,7 +155,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
-%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3
+%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3 LICENSE.BOOSTv1_0 LICENSE.ISC
 
 %files doc
 %{_docdir}/%{name}/
@@ -163,6 +163,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Mon Feb 11 2019 Aimylios <aimylios@xxx.xx>
+- add license text for Boost 1.0 and ISC
+
 * Fri Feb 8 2019 Aimylios <aimylios@xxx.xx>
 - remove support for Fedora 27
 - add build options related to Python 3 and Phoenix
