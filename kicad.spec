@@ -1,6 +1,8 @@
+%global version_suffix rc2
+
 Name:           kicad
-Version:        5.0.2
-Release:        1%{?dist}
+Version:        5.1.0
+Release:        %{version_suffix}.1%{?dist}
 Epoch:          2
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
@@ -10,18 +12,13 @@ URL:            http://www.kicad-pcb.org
 # Source files created with the following scripts ...
 #   kicad-clone.sh ... clone GIT repositories of main, doc, libs, etc.
 #   kicad-export.sh ... export GIT repositories and create tarballs
-Source0:        %{name}-%{version}.tar.gz
-Source1:        %{name}-i18n-%{version}.tar.gz
-Source2:        %{name}-doc-%{version}.tar.gz
-Source3:        %{name}-templates-%{version}.tar.gz
-Source4:        %{name}-symbols-%{version}.tar.gz
-Source5:        %{name}-footprints-%{version}.tar.gz
-Source6:        %{name}-packages3D-%{version}.tar.gz
-
-Patch1:         kicad-5.0.0-wxwidgets-config.patch
-
-# https://bugs.launchpad.net/kicad/+bug/1755752
-ExclusiveArch: %{ix86} x86_64 %{arm} aarch64
+Source0:        %{name}-%{version}-%{version_suffix}.tar.gz
+Source1:        %{name}-i18n-%{version}-%{version_suffix}.tar.gz
+Source2:        %{name}-doc-%{version}-%{version_suffix}.tar.gz
+Source3:        %{name}-templates-%{version}-%{version_suffix}.tar.gz
+Source4:        %{name}-symbols-%{version}-%{version_suffix}.tar.gz
+Source5:        %{name}-footprints-%{version}-%{version_suffix}.tar.gz
+Source6:        %{name}-packages3D-%{version}-%{version_suffix}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
@@ -35,7 +32,7 @@ BuildRequires:  compat-wxGTK3-gtk2-devel
 BuildRequires:  glew-devel
 BuildRequires:  glm-devel
 BuildRequires:  libcurl-devel
-BuildRequires:  mesa-libEGL-devel
+BuildRequires:  libngspice-devel
 BuildRequires:  OCE-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python2-devel
@@ -59,7 +56,7 @@ editor) and GerbView (Gerber viewer).
 Summary:        Documentation for KiCad
 License:        GPLv3+
 BuildArch:      noarch
-Requires:       kicad >= 5.0.0
+Requires:       kicad >= 5.1.0
 
 %description doc
 Documentation for KiCad.
@@ -68,7 +65,7 @@ Documentation for KiCad.
 Summary:        Templates for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
-Requires:       kicad >= 5.0.0
+Requires:       kicad >= 5.1.0
 
 %description templates
 Templates for KiCad.
@@ -77,7 +74,7 @@ Templates for KiCad.
 Summary:        Schematic symbols for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
-Requires:       kicad >= 5.0.0
+Requires:       kicad >= 5.1.0
 
 %description symbols
 Schematic symbols for KiCad.
@@ -86,7 +83,7 @@ Schematic symbols for KiCad.
 Summary:        Footprints for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
-Requires:       kicad >= 5.0.0
+Requires:       kicad >= 5.1.0
 
 %description footprints
 Footprints for KiCad.
@@ -96,7 +93,7 @@ Summary:        3D models for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
 Obsoletes:      kicad-packages3D
-Requires:       kicad >= 5.0.0
+Requires:       kicad >= 5.1.0
 
 %description packages3d
 3D models for KiCad.
@@ -104,18 +101,10 @@ Requires:       kicad >= 5.0.0
 
 %prep
 
-%setup -q -n %{name}-%{version} -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
-%patch1 -p1
+%setup -q -n %{name}-%{version}-%{version_suffix} -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
 
 
 %build
-
-# compat-wxGTK3-gtk2-devel is now merged with wxGTK3-devel and uses a single wx-config
-%if 0%{?fedora} > 27
-%global wx_config wx-config
-%else
-%global wx_config wx-config-3.0-gtk2
-%endif
 
 # KiCad application
 %cmake \
@@ -123,22 +112,23 @@ Requires:       kicad >= 5.0.0
     -DUSE_WX_OVERLAY=OFF \
     -DKICAD_SCRIPTING=ON \
     -DKICAD_SCRIPTING_MODULES=ON \
+    -DKICAD_SCRIPTING_PYTHON3=OFF \
     -DKICAD_SCRIPTING_WXPYTHON=OFF \
+    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=OFF \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
     -DKICAD_USE_OCE=ON \
     -DKICAD_USE_OCC=OFF \
     -DKICAD_INSTALL_DEMOS=ON \
     -DBUILD_GITHUB_PLUGIN=ON \
-    -DKICAD_SPICE=OFF \
+    -DKICAD_SPICE=ON \
     -DCMAKE_BUILD_TYPE=Release \
-    -DwxWidgets_CONFIG_EXECUTABLE=%{_bindir}/%{wx_config} \
     -DwxWidgets_CONFIG_OPTIONS=--toolkit=gtk2 \
     .
 %make_build
 
 # Localization
-mkdir %{name}-i18n-%{version}/build/
-pushd %{name}-i18n-%{version}/build/
+mkdir %{name}-i18n-%{version}-%{version_suffix}/build/
+pushd %{name}-i18n-%{version}-%{version_suffix}/build/
 %cmake \
     -DKICAD_I18N_UNIX_STRICT_PATH=ON \
     ..
@@ -146,8 +136,8 @@ pushd %{name}-i18n-%{version}/build/
 popd
 
 # Documentation (HTML only)
-mkdir %{name}-doc-%{version}/build/
-pushd %{name}-doc-%{version}/build/
+mkdir %{name}-doc-%{version}-%{version_suffix}/build/
+pushd %{name}-doc-%{version}-%{version_suffix}/build/
 %cmake \
     -DBUILD_FORMATS=html \
     ..
@@ -155,25 +145,25 @@ pushd %{name}-doc-%{version}/build/
 popd
 
 # Templates
-pushd %{name}-templates-%{version}/
+pushd %{name}-templates-%{version}-%{version_suffix}/
 %cmake
 %make_build
 popd
 
 # Symbol libraries
-pushd %{name}-symbols-%{version}/
+pushd %{name}-symbols-%{version}-%{version_suffix}/
 %cmake
 %make_build
 popd
 
 # Footprint libraries
-pushd %{name}-footprints-%{version}/
+pushd %{name}-footprints-%{version}-%{version_suffix}/
 %cmake
 %make_build
 popd
 
 # 3D models
-pushd %{name}-packages3D-%{version}/
+pushd %{name}-packages3D-%{version}-%{version_suffix}/
 %cmake
 %make_build
 popd
@@ -186,7 +176,7 @@ popd
 %{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Localization
-pushd %{name}-i18n-%{version}/build/
+pushd %{name}-i18n-%{version}-%{version_suffix}/build/
 %make_install
 popd
 
@@ -200,27 +190,27 @@ for desktopfile in %{buildroot}%{_datadir}/applications/*.desktop ; do
 done
 
 # Documentation
-pushd %{name}-doc-%{version}/build/
+pushd %{name}-doc-%{version}-%{version_suffix}/build/
 %make_install
 popd
 
 # Templates
-pushd %{name}-templates-%{version}/
+pushd %{name}-templates-%{version}-%{version_suffix}/
 %make_install
 popd
 
 # Symbol libraries
-pushd %{name}-symbols-%{version}/
+pushd %{name}-symbols-%{version}-%{version_suffix}/
 %make_install
 popd
 
 # Footprint libraries
-pushd %{name}-footprints-%{version}/
+pushd %{name}-footprints-%{version}-%{version_suffix}/
 %make_install
 popd
 
 # 3D models
-pushd %{name}-packages3D-%{version}/
+pushd %{name}-packages3D-%{version}-%{version_suffix}/
 %make_install
 popd
 
@@ -250,36 +240,40 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
-%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3
+%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3 LICENSE.BOOSTv1_0 LICENSE.ISC
 
 %files doc
 %{_docdir}/%{name}/
-%license %{name}-doc-%{version}/LICENSE.adoc
+%license %{name}-doc-%{version}-%{version_suffix}/LICENSE.adoc
 
 %files templates
 %exclude %{_datadir}/%{name}/template/fp-lib-table
 %exclude %{_datadir}/%{name}/template/sym-lib-table
 %exclude %{_datadir}/%{name}/template/kicad.pro
 %{_datadir}/%{name}/template/*
-%license %{name}-templates-%{version}/LICENSE.md
+%license %{name}-templates-%{version}-%{version_suffix}/LICENSE.md
 
 %files symbols
 %{_datadir}/%{name}/library/*.dcm
 %{_datadir}/%{name}/library/*.lib
 %{_datadir}/%{name}/template/sym-lib-table
-%license %{name}-symbols-%{version}/LICENSE.md
+%license %{name}-symbols-%{version}-%{version_suffix}/LICENSE.md
 
 %files footprints
 %{_datadir}/%{name}/modules/*.pretty
 %{_datadir}/%{name}/template/fp-lib-table
-%license %{name}-footprints-%{version}/LICENSE.md
+%license %{name}-footprints-%{version}-%{version_suffix}/LICENSE.md
 
 %files packages3d
 %{_datadir}/%{name}/modules/packages3d/*.3dshapes
-%license %{name}-packages3D-%{version}/LICENSE.md
+%license %{name}-packages3D-%{version}-%{version_suffix}/LICENSE.md
 
 
 %changelog
+* Sat Mar 2 2019 Aimylios <aimylios@xxx.xx> - 5.1.0-rc2.1
+- Update to 5.1.0-rc2
+- Enable support for ngspice simulation
+
 * Sun Dec 9 2018 Aimylios <aimylios@xxx.xx> - 5.0.2-1
 - Update to 5.0.2
 - Update dependencies
