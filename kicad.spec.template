@@ -155,7 +155,8 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
-%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3 LICENSE.BOOSTv1_0 LICENSE.ISC
+%license LICENSE.README
+%license LICENSE.GPLv3 LICENSE.AGPLv3 LICENSE.BOOSTv1_0 LICENSE.ISC LICENSE.CC-BY-SA-4.0
 
 %files doc
 %{_docdir}/%{name}/
@@ -163,6 +164,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
+- add license text for CC-BY-SA-4.0
+
 * Mon Feb 11 2019 Aimylios <aimylios@xxx.xx>
 - add license text for Boost 1.0 and ISC
 
