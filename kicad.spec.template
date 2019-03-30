@@ -11,9 +11,6 @@ Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-i18n-%{version}.tar.gz
 Source2:        %{name}-doc-%{version}.tar.gz
 
-# https://bugs.launchpad.net/kicad/+bug/1755752
-ExclusiveArch:  %{ix86} x86_64 %{arm} aarch64
-
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
@@ -166,6 +163,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %changelog
 * Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
 - add license text for CC-BY-SA-4.0
+- remove ExclusiveArch tag
 
 * Mon Feb 11 2019 Aimylios <aimylios@xxx.xx>
 - add license text for Boost 1.0 and ISC
