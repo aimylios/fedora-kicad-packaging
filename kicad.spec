@@ -1,5 +1,5 @@
 Name:           kicad
-Version:        5.1.0
+Version:        5.1.1
 Release:        1%{?dist}
 Epoch:          3
 Summary:        Electronic schematic diagrams and printed circuit board artwork
@@ -17,6 +17,9 @@ Source3:        %{name}-templates-%{version}.tar.gz
 Source4:        %{name}-symbols-%{version}.tar.gz
 Source5:        %{name}-footprints-%{version}.tar.gz
 Source6:        %{name}-packages3D-%{version}.tar.gz
+
+# https://bugs.launchpad.net/kicad/+bug/1755752
+ExcludeArch:    s390x
 
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
@@ -238,7 +241,8 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
-%license LICENSE.README LICENSE.GPLv3 LICENSE.AGPLv3 LICENSE.BOOSTv1_0 LICENSE.ISC
+%license LICENSE.README LICENSE.AGPLv3 LICENSE.GPLv3
+%license LICENSE.BOOSTv1_0 LICENSE.CC-BY-SA-4.0 LICENSE.ISC
 
 %files doc
 %{_docdir}/%{name}/
@@ -268,6 +272,11 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Tue Apr 16 2019 Aimylios <aimylios@xxx.xx> - 5.1.1-1
+- Update to 5.1.1
+- Add license text for CC-BY-SA-4.0
+- Add ExcludeArch for s390x
+
 * Tue Mar 12 2019 Aimylios <aimylios@xxx.xx> - 5.1.0-1
 - Update to 5.1.0
 - Increase Epoch to allow automatic updates
