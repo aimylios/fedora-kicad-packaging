@@ -1,5 +1,5 @@
 Name:           kicad
-Version:        5.1.1
+Version:        5.1.2
 Release:        1%{?dist}
 Epoch:          3
 Summary:        Electronic schematic diagrams and printed circuit board artwork
@@ -272,6 +272,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Thu Apr 25 2019 Aimylios <aimylios@xxx.xx> - 5.1.2-1
+- Update to 5.1.2
+
 * Tue Apr 16 2019 Aimylios <aimylios@xxx.xx> - 5.1.1-1
 - Update to 5.1.1
 - Add license text for CC-BY-SA-4.0
