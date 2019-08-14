@@ -3,7 +3,7 @@
 set -e
 set -x
 
-KICAD_VERSION="5.1.2"
+KICAD_VERSION="5.1.4"
 
 ./kicad-clone.sh $KICAD_VERSION
 ./kicad-export.sh $KICAD_VERSION
