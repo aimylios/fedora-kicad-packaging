@@ -152,8 +152,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
-%license LICENSE.README
-%license LICENSE.GPLv3 LICENSE.AGPLv3 LICENSE.BOOSTv1_0 LICENSE.ISC LICENSE.CC-BY-SA-4.0
+%license LICENSE.*
 
 %files doc
 %{_docdir}/%{name}/
@@ -166,6 +165,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 - switch to Python 3 and GTK3
 - switch from OCE to OCC
 - update build options
+- use wildcard to include all license texts
 
 * Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
 - add license text for CC-BY-SA-4.0
