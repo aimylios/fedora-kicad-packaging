@@ -66,8 +66,6 @@ documentation for KiCad in multiple languages.
 
 # KiCad application
 %cmake \
-    -DUSE_WX_GRAPHICS_CONTEXT=OFF \
-    -DUSE_WX_OVERLAY=OFF \
     -DKICAD_SCRIPTING=ON \
     -DKICAD_SCRIPTING_MODULES=ON \
     -DKICAD_SCRIPTING_PYTHON3=ON \
@@ -77,6 +75,7 @@ documentation for KiCad in multiple languages.
     -DKICAD_USE_OCE=OFF \
     -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=ON \
+    -DKICAD_BUILD_QA_TESTS=ON \
     -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
     -DKICAD_VERSION_EXTRA=REVISION_NUMBER%{?dist} \
@@ -166,6 +165,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 - relax git build requirement to git-core
 - switch to Python 3 and GTK3
 - switch from OCE to OCC
+- update build options
 
 * Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
 - add license text for CC-BY-SA-4.0
