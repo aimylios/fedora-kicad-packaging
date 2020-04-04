@@ -16,7 +16,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
-BuildRequires:  git
+BuildRequires:  git-core
 BuildRequires:  libappstream-glib
 BuildRequires:  swig
 BuildRequires:  boost-devel
@@ -161,6 +161,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Sat Apr 4 2020 Aimylios <aimylios@xxx.xx>
+- relax git build requirement to git-core
+
 * Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
 - add license text for CC-BY-SA-4.0
 - remove ExclusiveArch tag
