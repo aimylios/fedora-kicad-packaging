@@ -24,7 +24,7 @@ BuildRequires:  glew-devel
 BuildRequires:  glm-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  libngspice-devel
-BuildRequires:  OCE-devel
+BuildRequires:  opencascade-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python3-devel
 BuildRequires:  python3-wxpython4
@@ -74,8 +74,8 @@ documentation for KiCad in multiple languages.
     -DKICAD_SCRIPTING_WXPYTHON=ON \
     -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
-    -DKICAD_USE_OCE=ON \
-    -DKICAD_USE_OCC=OFF \
+    -DKICAD_USE_OCE=OFF \
+    -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=ON \
     -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
@@ -165,6 +165,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 * Sat Apr 4 2020 Aimylios <aimylios@xxx.xx>
 - relax git build requirement to git-core
 - switch to Python 3 and GTK3
+- switch from OCE to OCC
 
 * Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
 - add license text for CC-BY-SA-4.0
