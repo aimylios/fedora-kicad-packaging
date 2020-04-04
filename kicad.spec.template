@@ -20,22 +20,22 @@ BuildRequires:  git-core
 BuildRequires:  libappstream-glib
 BuildRequires:  swig
 BuildRequires:  boost-devel
-BuildRequires:  compat-wxGTK3-gtk2-devel
 BuildRequires:  glew-devel
 BuildRequires:  glm-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  libngspice-devel
 BuildRequires:  OCE-devel
 BuildRequires:  openssl-devel
-BuildRequires:  python2-devel
-BuildRequires:  wxPython-GTK2-devel
+BuildRequires:  python3-devel
+BuildRequires:  python3-wxpython4
+BuildRequires:  wxGTK3-devel
 
 # Documentation
 BuildRequires:  asciidoc
 BuildRequires:  po4a
 
 Requires:       electronics-menu
-Requires:       python2-wxpython-gtk2
+Requires:       python3-wxpython4
 
 %description
 KiCad is an open-source software tool for the creation of electronic schematic
@@ -70,9 +70,9 @@ documentation for KiCad in multiple languages.
     -DUSE_WX_OVERLAY=OFF \
     -DKICAD_SCRIPTING=ON \
     -DKICAD_SCRIPTING_MODULES=ON \
-    -DKICAD_SCRIPTING_PYTHON3=OFF \
+    -DKICAD_SCRIPTING_PYTHON3=ON \
     -DKICAD_SCRIPTING_WXPYTHON=ON \
-    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=OFF \
+    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
     -DKICAD_USE_OCE=ON \
     -DKICAD_USE_OCC=OFF \
@@ -145,7 +145,8 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_bindir}/*
 %{_libdir}/%{name}/
 %{_libdir}/libkicad_3dsg.so*
-%{python2_sitelib}/*
+%{python3_sitelib}/*pcbnew*
+%{python3_sitelib}/__pycache__/*
 %{_datadir}/%{name}/
 %{_datadir}/appdata/*.xml
 %{_datadir}/applications/*.desktop
@@ -163,6 +164,7 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %changelog
 * Sat Apr 4 2020 Aimylios <aimylios@xxx.xx>
 - relax git build requirement to git-core
+- switch to Python 3 and GTK3
 
 * Sat Mar 30 2019 Aimylios <aimylios@xxx.xx>
 - add license text for CC-BY-SA-4.0
