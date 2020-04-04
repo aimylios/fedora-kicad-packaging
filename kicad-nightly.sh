@@ -15,12 +15,17 @@ clone_repository()
         git checkout HEAD
         cd ..
     else
-        if [ "$SOURCE" == "launchpad" ]; then
-            echo "Cloning $REPOSITORY repository from Launchpad..."
-            git clone https://git.launchpad.net/$REPOSITORY
-        else
+        if [ "$SOURCE" == "gitlab_code" ]; then
+            echo "Cloning $REPOSITORY repository from GitLab..."
+            git clone https://gitlab.com/kicad/code/$REPOSITORY
+        elif [ "$SOURCE" == "gitlab_services" ]; then
+            echo "Cloning $REPOSITORY repository from GitLab..."
+            git clone https://gitlab.com/kicad/services/$REPOSITORY
+        elif [ "$SOURCE" == "github" ]; then
             echo "Cloning $REPOSITORY repository from GitHub..."
             git clone https://github.com/KiCad/$REPOSITORY.git
+        else
+            echo "Unable to clone $REPOSITORY from \"$SOURCE\"."
         fi
         cd $REPOSITORY
         git checkout HEAD
@@ -72,9 +77,9 @@ cd ..
 
 #cp ./*.patch ./rpmbuild/SOURCES/
 
-clone_repository "kicad"      launchpad
-clone_repository "kicad-i18n" github
-clone_repository "kicad-doc"  github
+clone_repository "kicad"      gitlab_code
+clone_repository "kicad-i18n" gitlab_code
+clone_repository "kicad-doc"  gitlab_services
 KICAD_REV=$(get_current_revision kicad)
 export_tarball   "kicad"      $KICAD_REV
 export_tarball   "kicad-i18n" $KICAD_REV
