@@ -75,7 +75,7 @@ documentation for KiCad in multiple languages.
     -DKICAD_USE_OCE=OFF \
     -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=ON \
-    -DKICAD_BUILD_QA_TESTS=ON \
+    -DKICAD_BUILD_QA_TESTS=OFF \
     -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
     -DKICAD_VERSION_EXTRA=REVISION_NUMBER%{?dist} \
