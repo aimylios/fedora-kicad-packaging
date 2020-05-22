@@ -21,9 +21,18 @@ clone_repository()
         if [ "$SOURCE" == "launchpad" ]; then
             echo "Cloning $REPOSITORY repository from Launchpad..."
             git clone https://git.launchpad.net/$REPOSITORY
-        else
+        elif [ "$SOURCE" == "gitlab_code" ]; then
+            echo "Cloning $REPOSITORY repository from GitLab..."
+            git clone https://gitlab.com/kicad/code/$REPOSITORY.git
+        elif [ "$SOURCE" == "gitlab_services" ]; then
+            echo "Cloning $REPOSITORY repository from Gitlab..."
+            git clone https://gitlab.com/kicad/services/$REPOSITORY.git
+        elif [ "$SOURCE" == "github" ]; then
             echo "Cloning $REPOSITORY repository from GitHub..."
             git clone https://github.com/KiCad/$REPOSITORY.git
+        else
+            echo "Unknown repository source \"$SOURCE\"."
+            return 1
         fi
         cd $REPOSITORY
         git checkout $KICAD_VERSION
@@ -31,9 +40,9 @@ clone_repository()
     fi
 }
 
-clone_repository "kicad"            launchpad
-clone_repository "kicad-i18n"       github
-clone_repository "kicad-doc"        github
+clone_repository "kicad"            gitlab_code
+clone_repository "kicad-i18n"       gitlab_code
+clone_repository "kicad-doc"        gitlab_services
 clone_repository "kicad-templates"  github
 clone_repository "kicad-symbols"    github
 clone_repository "kicad-footprints" github

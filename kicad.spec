@@ -1,5 +1,5 @@
 Name:           kicad
-Version:        5.1.4
+Version:        5.1.6
 Release:        1%{?dist}
 Epoch:          3
 Summary:        Electronic schematic diagrams and printed circuit board artwork
@@ -18,6 +18,11 @@ Source4:        %{name}-symbols-%{version}.tar.gz
 Source5:        %{name}-footprints-%{version}.tar.gz
 Source6:        %{name}-packages3D-%{version}.tar.gz
 
+# https://docs.fedoraproject.org/en-US/packaging-guidelines/Debuginfo/
+Patch0:         kicad-do-not-strip.patch
+#https://gitlab.com/kicad/code/kicad/-/merge_requests/207
+Patch1:         kicad-include-algorithm.patch
+
 # https://bugs.launchpad.net/kicad/+bug/1755752
 ExcludeArch:    s390x
 
@@ -27,22 +32,24 @@ BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
 BuildRequires:  libappstream-glib
+BuildRequires:  python3-wxpython4
 BuildRequires:  swig
 BuildRequires:  boost-devel
-BuildRequires:  compat-wxGTK3-gtk2-devel
 BuildRequires:  glew-devel
 BuildRequires:  glm-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  libngspice-devel
-BuildRequires:  OCE-devel
+BuildRequires:  opencascade-devel
 BuildRequires:  openssl-devel
-BuildRequires:  python2-devel
+BuildRequires:  python3-devel
+BuildRequires:  wxGTK3-devel
 
 # Documentation
 BuildRequires:  asciidoc
 BuildRequires:  po4a
 
 Requires:       electronics-menu
+Requires:       python3-wxpython4
 
 %description
 KiCad is an open-source software tool for the creation of electronic schematic
@@ -57,7 +64,7 @@ editor) and GerbView (Gerber viewer).
 Summary:        Documentation for KiCad
 License:        GPLv3+
 BuildArch:      noarch
-Requires:       kicad >= 5.1.0
+Recommends:     kicad >= 5.1.0
 
 %description doc
 Documentation for KiCad.
@@ -66,7 +73,7 @@ Documentation for KiCad.
 Summary:        Templates for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
-Requires:       kicad >= 5.1.0
+Recommends:     kicad >= 5.1.0
 
 %description templates
 Templates for KiCad.
@@ -75,7 +82,7 @@ Templates for KiCad.
 Summary:        Schematic symbols for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
-Requires:       kicad >= 5.1.0
+Recommends:     kicad >= 5.1.0
 
 %description symbols
 Schematic symbols for KiCad.
@@ -84,7 +91,7 @@ Schematic symbols for KiCad.
 Summary:        Footprints for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
-Requires:       kicad >= 5.1.0
+Recommends:     kicad >= 5.1.0
 
 %description footprints
 Footprints for KiCad.
@@ -94,7 +101,7 @@ Summary:        3D models for KiCad
 License:        CC-BY-SA
 BuildArch:      noarch
 Obsoletes:      kicad-packages3D
-Requires:       kicad >= 5.1.0
+Recommends:     kicad >= 5.1.0
 
 %description packages3d
 3D models for KiCad.
@@ -103,6 +110,9 @@ Requires:       kicad >= 5.1.0
 %prep
 
 %setup -q -n %{name}-%{version} -a 1 -a 2 -a 3 -a 4 -a 5 -a 6
+
+%patch0 -p1
+%patch1 -p1
 
 
 %build
@@ -113,17 +123,16 @@ Requires:       kicad >= 5.1.0
     -DUSE_WX_OVERLAY=OFF \
     -DKICAD_SCRIPTING=ON \
     -DKICAD_SCRIPTING_MODULES=ON \
-    -DKICAD_SCRIPTING_PYTHON3=OFF \
-    -DKICAD_SCRIPTING_WXPYTHON=OFF \
-    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=OFF \
+    -DKICAD_SCRIPTING_PYTHON3=ON \
+    -DKICAD_SCRIPTING_WXPYTHON=ON \
+    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
-    -DKICAD_USE_OCE=ON \
-    -DKICAD_USE_OCC=OFF \
+    -DKICAD_USE_OCE=OFF \
+    -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=ON \
     -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
     -DCMAKE_BUILD_TYPE=Release \
-    -DwxWidgets_CONFIG_OPTIONS=--toolkit=gtk2 \
     .
 %make_build
 
@@ -174,7 +183,6 @@ popd
 
 # KiCad application
 %make_install
-%{__cp} -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Localization
 pushd %{name}-i18n-%{version}/build/
@@ -194,6 +202,7 @@ done
 pushd %{name}-doc-%{version}/build/
 %make_install
 popd
+cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Templates
 pushd %{name}-templates-%{version}/
@@ -226,7 +235,8 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_bindir}/*
 %{_libdir}/%{name}/
 %{_libdir}/libkicad_3dsg.so*
-%{_prefix}/lib/python2.7/site-packages/*
+%{python3_sitelib}/*pcbnew*
+%{python3_sitelib}/__pycache__/*
 %dir %{_datadir}/%{name}/
 %{_datadir}/%{name}/demos/
 %dir %{_datadir}/%{name}/library/
@@ -241,8 +251,8 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/mime/packages/*.xml
-%license LICENSE.README LICENSE.AGPLv3 LICENSE.GPLv3
-%license LICENSE.BOOSTv1_0 LICENSE.CC-BY-SA-4.0 LICENSE.ISC
+%license LICENSE.README LICENSE.AGPLv3 LICENSE.GPLv3 LICENSE.BOOSTv1_0
+%license LICENSE.CC-BY-SA-4.0 LICENSE.ISC LICENSE.MIT
 
 %files doc
 %{_docdir}/%{name}/
@@ -272,6 +282,12 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata
 
 
 %changelog
+* Fri May 22 2020 Aimylios <aimylios@xxx.xx> - 5.1.6-1
+- Update to 5.1.6
+- Switch from OCE to OCC
+- Switch from Python 2 to Python 3
+- Add license text for MIT
+
 * Wed Aug 14 2019 Aimylios <aimylios@xxx.xx> - 5.1.4-1
 - Update to 5.1.4
 
