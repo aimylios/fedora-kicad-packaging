@@ -1,2 +1,8 @@
-rpmbuild
+# Dolphin settings
+.directory
 
+# folder to store sources
+sources
+
+# Python artifacts
+*.pyc
