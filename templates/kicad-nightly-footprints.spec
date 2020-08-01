@@ -38,14 +38,14 @@ pushd build
 %cmake \
     -DKICAD_DATA=%{_datadir}/kicad-nightly \
     ..
-%make_build
+%cmake_build
 popd
 
 
 %install
 
 pushd build
-%make_install
+%cmake_install
 popd
 
 
@@ -57,6 +57,9 @@ popd
 
 
 %changelog
+* Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
+- update cmake macros
+
 * Sat May 23 2020 Aimylios <aimylios@xxx.xx>
 - allow installation in parallel to stable release
 - set correct version of package

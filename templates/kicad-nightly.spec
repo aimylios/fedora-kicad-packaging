@@ -108,7 +108,7 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DKICAD_DATA=%{_datadir}/%{name} \
     -DKICAD_DOCS=%{_docdir}/%{name} \
     .
-%make_build
+%cmake_build
 
 # Localization
 mkdir -p kicad-i18n-%{commit1}/build/
@@ -117,7 +117,7 @@ pushd kicad-i18n-%{commit1}/build/
     -DCMAKE_INSTALL_PREFIX=%{kicad_prefix} \
     -DKICAD_I18N_UNIX_STRICT_PATH=ON \
     ..
-%make_build
+%cmake_build
 popd
 
 # Documentation (HTML only)
@@ -127,14 +127,14 @@ pushd kicad-doc-%{commit2}/build/
     -DKICAD_DOC_PATH=%{_docdir}/%{name} \
     -DBUILD_FORMATS=html \
     ..
-%make_build
+%cmake_build
 popd
 
 
 %install
 
 # KiCad application
-%make_install
+%cmake_install
 
 # Binaries must be executable to be detected by find-debuginfo.sh
 chmod +x %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/_pcbnew.so
@@ -221,12 +221,12 @@ ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 
 # Localization
 pushd kicad-i18n-%{commit1}/build/
-%make_install
+%cmake_install
 popd
 
 # Documentation
 pushd kicad-doc-%{commit2}/build/
-%make_install
+%cmake_install
 popd
 cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
@@ -252,6 +252,9 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 
 
 %changelog
+* Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
+- update cmake macros
+
 * Sat May 23 2020 Aimylios <aimylios@xxx.xx>
 - allow installation in parallel to stable release
 - set correct version of package and application
