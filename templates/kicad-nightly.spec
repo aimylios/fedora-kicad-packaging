@@ -1,7 +1,6 @@
 %global snapdate @SNAPSHOTDATE@
 %global commit0 @COMMITHASH0@
 %global commit1 @COMMITHASH1@
-%global commit2 @COMMITHASH2@
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 %global kicad_prefix %{_prefix}/lib/kicad-nightly
@@ -17,8 +16,7 @@ License:        GPLv3+
 URL:            https://www.kicad-pcb.org
 
 Source0:        https://gitlab.com/kicad/code/kicad/-/archive/%{commit0}/kicad-%{commit0}.tar.gz
-Source1:        https://gitlab.com/kicad/code/kicad-i18n/-/archive/%{commit1}/kicad-i18n-%{commit1}.tar.gz
-Source2:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit2}/kicad-doc-%{commit2}.tar.gz
+Source1:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit1}/kicad-doc-%{commit1}.tar.gz
 
 BuildRequires:  chrpath
 BuildRequires:  cmake
@@ -38,6 +36,7 @@ BuildRequires:  opencascade-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python3-devel
 BuildRequires:  python3-wxpython4
+BuildRequires:  shared-mime-info
 BuildRequires:  wxGTK3-devel
 BuildRequires:  zlib-devel
 
@@ -80,7 +79,7 @@ documentation for KiCad in multiple languages.
 
 %prep
 
-%setup -q -n kicad-%{commit0} -a 1 -a 2
+%setup -q -n kicad-%{commit0} -a 1
 
 # Set the version of the application to the version of the package
 sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
@@ -102,6 +101,8 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DKICAD_BUILD_QA_TESTS=OFF \
     -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
+    -DKICAD_BUILD_I18N=ON \
+    -DKICAD_I18N_UNIX_STRICT_PATH=ON \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_INSTALL_PREFIX=%{kicad_prefix} \
     -DCMAKE_INSTALL_DATADIR=%{_datadir}/%{name} \
@@ -112,19 +113,9 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     .
 %cmake_build
 
-# Localization
-mkdir -p kicad-i18n-%{commit1}/build/
-pushd kicad-i18n-%{commit1}/build/
-%cmake \
-    -DCMAKE_INSTALL_PREFIX=%{kicad_prefix} \
-    -DKICAD_I18N_UNIX_STRICT_PATH=ON \
-    ..
-%cmake_build
-popd
-
 # Documentation (HTML only)
-mkdir -p kicad-doc-%{commit2}/build/
-pushd kicad-doc-%{commit2}/build/
+mkdir -p kicad-doc-%{commit1}/build/
+pushd kicad-doc-%{commit1}/build/
 %cmake \
     -DKICAD_DOC_PATH=%{_docdir}/%{name} \
     -DBUILD_FORMATS=html \
@@ -221,13 +212,8 @@ mkdir -p %{buildroot}%{_datadir}/%{name}/modules/
 mkdir -p %{buildroot}%{_datadir}/%{name}/3dmodels/
 ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 
-# Localization
-pushd kicad-i18n-%{commit1}/build/
-%cmake_install
-popd
-
 # Documentation
-pushd kicad-doc-%{commit2}/build/
+pushd kicad-doc-%{commit1}/build/
 %cmake_install
 popd
 cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
@@ -250,7 +236,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 
 %files doc
 %{_docdir}/%{name}/
-%license kicad-doc-%{commit2}/LICENSE.adoc
+%license kicad-doc-%{commit1}/LICENSE.adoc
 
 
 %changelog
@@ -258,6 +244,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 - change license from AGPLv3+ to GPLv3+ and include all license texts
 - add new build requirements
 - adapt to new installation path of 3D models
+- build translations from main KiCAD source repository
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros

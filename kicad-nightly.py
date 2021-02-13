@@ -14,7 +14,6 @@ TEMPLATE_PATH = os.path.join(SCRIPT_PATH, 'templates')
 
 # GitLab Project IDs
 GITLAB_ID_KICAD = 15502567              # https://gitlab.com/kicad/code/kicad
-GITLAB_ID_KICAD_I18N = 15622045         # https://gitlab.com/kicad/code/kicad-i18n
 GITLAB_ID_KICAD_DOC = 15621628          # https://gitlab.com/kicad/services/kicad-doc
 GITLAB_ID_KICAD_TEMPLATES = 21506275    # https://gitlab.com/kicad/libraries/kicad-templates
 GITLAB_ID_KICAD_SYMBOLS = 21545491      # https://gitlab.com/kicad/libraries/kicad-symbols
@@ -97,9 +96,8 @@ print('Initialising remote repositories...')
 components = []
 if not args.skip or 'kicad' not in args.skip:
     kicad = GitLabRepository(GITLAB_ID_KICAD)
-    kicad_i18n = GitLabRepository(GITLAB_ID_KICAD_I18N)
     kicad_doc = GitLabRepository(GITLAB_ID_KICAD_DOC)
-    components.append(['kicad-nightly', pkg_version, kicad, kicad_i18n, kicad_doc])
+    components.append(['kicad-nightly', pkg_version, kicad, kicad_doc])
 if not args.skip_libraries:
     if not args.skip or 'templates' not in args.skip:
         kicad_templates = GitLabRepository(GITLAB_ID_KICAD_TEMPLATES)
