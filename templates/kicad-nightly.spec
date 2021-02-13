@@ -26,6 +26,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
+BuildRequires:  gtk3-devel
 BuildRequires:  libappstream-glib
 BuildRequires:  swig
 BuildRequires:  boost-devel
@@ -38,6 +39,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  python3-devel
 BuildRequires:  python3-wxpython4
 BuildRequires:  wxGTK3-devel
+BuildRequires:  zlib-devel
 
 # Documentation
 BuildRequires:  asciidoc
@@ -254,6 +256,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 %changelog
 * Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
 - change license from AGPLv3+ to GPLv3+ and include all license texts
+- add new build requirements
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
