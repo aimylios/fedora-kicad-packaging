@@ -10,7 +10,7 @@ Summary:        Schematic symbols for KiCad
 License:        CC-BY-SA
 URL:            https://kicad-pcb.org/libraries/
 
-Source0:        https://github.com/KiCad/kicad-symbols/archive/%{commit0}/kicad-symbols-%{commit0}.tar.gz
+Source0:        https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/%{commit0}/kicad-symbols-%{commit0}.tar.gz
 
 BuildArch:      noarch
 
@@ -58,6 +58,9 @@ popd
 
 
 %changelog
+* Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
+- get sources from GitLab
+
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
 

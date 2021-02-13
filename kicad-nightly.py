@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from buildhelper.GitRepository import GitLabRepository, GitHubRepository
+from buildhelper.GitRepository import GitLabRepository
 from buildhelper.RPM import LocalBuilder, CoprBuilder
 
 import argparse
@@ -13,9 +13,13 @@ SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_PATH = os.path.join(SCRIPT_PATH, 'templates')
 
 # GitLab Project IDs
-GITLAB_ID_KICAD = 15502567      # https://gitlab.com/kicad/code/kicad
-GITLAB_ID_KICAD_I18N = 15622045 # https://gitlab.com/kicad/code/kicad-i18n
-GITLAB_ID_KICAD_DOC = 15621628  # https://gitlab.com/kicad/services/kicad-doc
+GITLAB_ID_KICAD = 15502567              # https://gitlab.com/kicad/code/kicad
+GITLAB_ID_KICAD_I18N = 15622045         # https://gitlab.com/kicad/code/kicad-i18n
+GITLAB_ID_KICAD_DOC = 15621628          # https://gitlab.com/kicad/services/kicad-doc
+GITLAB_ID_KICAD_TEMPLATES = 21506275    # https://gitlab.com/kicad/libraries/kicad-templates
+GITLAB_ID_KICAD_SYMBOLS = 21545491      # https://gitlab.com/kicad/libraries/kicad-symbols
+GITLAB_ID_KICAD_FOOTPRINTS = 21601606   # https://gitlab.com/kicad/libraries/kicad-footprints
+GITLAB_ID_KICAD_PACKAGES3D = 21604637   # https://gitlab.com/kicad/libraries/kicad-packages3D
 
 # The version of the packages will be set to the current KICAD_SEMANTIC_VERSION
 # defined in the master branch of the KiCad source code. This is the URL to the
@@ -98,16 +102,16 @@ if not args.skip or 'kicad' not in args.skip:
     components.append(['kicad-nightly', pkg_version, kicad, kicad_i18n, kicad_doc])
 if not args.skip_libraries:
     if not args.skip or 'templates' not in args.skip:
-        kicad_templates = GitHubRepository('KiCad', 'kicad-templates')
+        kicad_templates = GitLabRepository(GITLAB_ID_KICAD_TEMPLATES)
         components.append(['kicad-nightly-templates', pkg_version, kicad_templates])
     if not args.skip or 'symbols' not in args.skip:
-        kicad_symbols = GitHubRepository('KiCad', 'kicad-symbols')
+        kicad_symbols = GitLabRepository(GITLAB_ID_KICAD_SYMBOLS)
         components.append(['kicad-nightly-symbols', pkg_version, kicad_symbols])
     if not args.skip or 'footprints' not in args.skip:
-        kicad_footprints = GitHubRepository('KiCad', 'kicad-footprints')
+        kicad_footprints = GitLabRepository(GITLAB_ID_KICAD_FOOTPRINTS)
         components.append(['kicad-nightly-footprints', pkg_version, kicad_footprints])
     if not args.skip or 'packages3d' not in args.skip:
-        kicad_packages3d = GitHubRepository('KiCad', 'kicad-packages3D')
+        kicad_packages3d = GitLabRepository(GITLAB_ID_KICAD_PACKAGES3D)
         components.append(['kicad-nightly-packages3d', pkg_version, kicad_packages3d])
 
 # generate SPEC files and trigger build of RPMs
