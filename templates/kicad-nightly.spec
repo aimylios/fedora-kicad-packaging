@@ -13,7 +13,7 @@ Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
-License:        AGPLv3+
+License:        GPLv3+
 URL:            https://www.kicad-pcb.org
 
 Source0:        https://gitlab.com/kicad/code/kicad/-/archive/%{commit0}/kicad-%{commit0}.tar.gz
@@ -244,7 +244,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/mime/packages/*.xml
 %{kicad_prefix}/
-%license LICENSE.*
+%license LICENSE*
 
 %files doc
 %{_docdir}/%{name}/
@@ -252,6 +252,9 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 
 
 %changelog
+* Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
+- change license from AGPLv3+ to GPLv3+ and include all license texts
+
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
 
