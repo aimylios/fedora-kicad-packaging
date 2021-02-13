@@ -146,10 +146,12 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
             echo ''
             echo 'export LD_LIBRARY_PATH=%{kicad_prefix}/%{_lib}/:%{kicad_prefix}/lib/'
             echo ''
-            echo '[ -z "${KICAD_TEMPLATE_DIR}" ] && export KICAD_TEMPLATE_DIR=%{_datadir}/%{name}/template/'
-            echo '[ -z "${KICAD_SYMBOL_DIR}" ] && export KICAD_SYMBOL_DIR=%{_datadir}/%{name}/library/'
-            echo '[ -z "${KISYSMOD}" ] && export KISYSMOD=%{_datadir}/%{name}/modules/'
-            echo '[ -z "${KISYS3DMOD}" ] && export KISYS3DMOD=%{_datadir}/%{name}/3dmodels/'
+            echo '[ -z "${KICAD_PATH}" ] && export KICAD_PATH=%{_datadir}/%{name}/'
+            echo '[ -z "${KICAD6_SCRIPTING_DIR}" ] && export KICAD6_SCRIPTING_DIR=%{_datadir}/%{name}/scripting/'
+            echo '[ -z "${KICAD6_TEMPLATE_DIR}" ] && export KICAD6_TEMPLATE_DIR=%{_datadir}/%{name}/template/'
+            echo '[ -z "${KICAD6_SYMBOL_DIR}" ] && export KICAD6_SYMBOL_DIR=%{_datadir}/%{name}/library/'
+            echo '[ -z "${KICAD6_FOOTPRINT_DIR}" ] && export KICAD6_FOOTPRINT_DIR=%{_datadir}/%{name}/modules/'
+            echo '[ -z "${KICAD6_3DMODEL_DIR}" ] && export KICAD6_3DMODEL_DIR=%{_datadir}/%{name}/3dmodels/'
             echo ''
             echo "%{kicad_bindir}/${application} \"\$@\""
         ) > %{buildroot}%{_bindir}/${application}-nightly
@@ -245,6 +247,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 - adapt to new installation path of 3D models
 - build translations from main KiCAD source repository
 - update build options
+- switch to new environment variables
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
