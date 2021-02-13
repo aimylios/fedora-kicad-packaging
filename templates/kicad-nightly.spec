@@ -159,7 +159,7 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
             echo '[ -z "${KICAD_TEMPLATE_DIR}" ] && export KICAD_TEMPLATE_DIR=%{_datadir}/%{name}/template/'
             echo '[ -z "${KICAD_SYMBOL_DIR}" ] && export KICAD_SYMBOL_DIR=%{_datadir}/%{name}/library/'
             echo '[ -z "${KISYSMOD}" ] && export KISYSMOD=%{_datadir}/%{name}/modules/'
-            echo '[ -z "${KISYS3DMOD}" ] && export KISYS3DMOD=%{_datadir}/%{name}/modules/packages3d/'
+            echo '[ -z "${KISYS3DMOD}" ] && export KISYS3DMOD=%{_datadir}/%{name}/3dmodels/'
             echo ''
             echo "%{kicad_bindir}/${application} \"\$@\""
         ) > %{buildroot}%{_bindir}/${application}-nightly
@@ -218,7 +218,7 @@ rm -rf %{buildroot}%{kicad_datadir}/applications/
 # Library folders
 mkdir -p %{buildroot}%{_datadir}/%{name}/library/
 mkdir -p %{buildroot}%{_datadir}/%{name}/modules/
-mkdir -p %{buildroot}%{_datadir}/%{name}/modules/packages3d/
+mkdir -p %{buildroot}%{_datadir}/%{name}/3dmodels/
 ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 
 # Localization
@@ -257,6 +257,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 * Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
 - change license from AGPLv3+ to GPLv3+ and include all license texts
 - add new build requirements
+- adapt to new installation path of 3D models
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros

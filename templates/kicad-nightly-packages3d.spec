@@ -50,7 +50,7 @@ popd
 
 
 %files
-%{_datadir}/kicad-nightly/modules/packages3d/*.3dshapes
+%{_datadir}/kicad-nightly/3dmodels/*.3dshapes/
 %doc README.md CREDITS.md
 %license LICENSE.md
 
@@ -58,6 +58,7 @@ popd
 %changelog
 * Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
 - get sources from GitLab
+- switch to new installation path
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
