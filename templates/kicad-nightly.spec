@@ -99,7 +99,6 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=ON \
     -DKICAD_BUILD_QA_TESTS=OFF \
-    -DBUILD_GITHUB_PLUGIN=ON \
     -DKICAD_SPICE=ON \
     -DKICAD_BUILD_I18N=ON \
     -DKICAD_I18N_UNIX_STRICT_PATH=ON \
@@ -245,6 +244,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 - add new build requirements
 - adapt to new installation path of 3D models
 - build translations from main KiCAD source repository
+- update build options
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
