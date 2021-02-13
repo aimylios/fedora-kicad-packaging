@@ -50,8 +50,7 @@ popd
 
 
 %files
-%{_datadir}/kicad-nightly/library/*.dcm
-%{_datadir}/kicad-nightly/library/*.lib
+%{_datadir}/kicad-nightly/library/*.kicad_sym
 %{_datadir}/kicad-nightly/template/sym-lib-table
 %doc README.md
 %license LICENSE.md
@@ -60,6 +59,7 @@ popd
 %changelog
 * Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
 - get sources from GitLab
+- adapt to new library file format
 
 * Sat Aug 1 2020 Aimylios <aimylios@xxx.xx>
 - update cmake macros
