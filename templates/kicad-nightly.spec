@@ -104,8 +104,8 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DKICAD_I18N_UNIX_STRICT_PATH=ON \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_INSTALL_PREFIX=%{kicad_prefix} \
-    -DCMAKE_INSTALL_DATADIR=%{_datadir}/%{name} \
-    -DCMAKE_INSTALL_DOCDIR=%{_docdir}/%{name} \
+    -DCMAKE_INSTALL_DATADIR=%{_datadir} \
+    -DCMAKE_INSTALL_DOCDIR=%{_docdir} \
     -DDEFAULT_INSTALL_PATH=%{kicad_prefix} \
     -DKICAD_DATA=%{_datadir}/%{name} \
     -DKICAD_DOCS=%{_docdir}/%{name} \
@@ -138,7 +138,7 @@ chrpath --delete %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-p
 %py_byte_compile %{python3} %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/
 
 # Wrapper scripts
-mkdir -p  %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_bindir}
 ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
     while read application; do
         (
@@ -158,54 +158,51 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
     done
 
 # Icons
-ls -1 %{buildroot}%{kicad_datadir}/icons/hicolor/ | \
+ls -1 %{buildroot}%{_datadir}/icons/hicolor/ | \
     while read size; do
-        mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/
-        ls -1 %{buildroot}%{kicad_datadir}/icons/hicolor/${size}/apps/ | \
+        ls -1 %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/ | \
             while read icon; do
-                mv %{buildroot}%{kicad_datadir}/icons/hicolor/${size}/apps/${icon} \
+                mv %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/${icon} \
                     %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/${icon%%.*}-nightly.${icon##*.}
             done
-        mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/
-        ls -1 %{buildroot}%{kicad_datadir}/icons/hicolor/${size}/mimetypes/ | grep 'kicad' | \
+        ls -1 %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/ | grep 'kicad' | \
             while read icon; do
-                mv %{buildroot}%{kicad_datadir}/icons/hicolor/${size}/mimetypes/${icon} \
+                mv %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/${icon} \
                     %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/${icon%%%%kicad*}kicad-nightly${icon#*kicad}
             done
     done
-rm -rf %{buildroot}%{kicad_datadir}/icons/
 
 # MIME files
-mkdir -p %{buildroot}%{_datadir}/mime/packages/
 sed -i \
     -e 's/x-kicad/x-kicad-nightly/g' \
     -e 's/KiCad/KiCad Nightly/g' \
-    %{buildroot}%{kicad_datadir}/mime/packages/kicad-kicad.xml
-ls -1 %{buildroot}%{kicad_datadir}/mime/packages/ | grep -F '.xml' | \
+    %{buildroot}%{_datadir}/mime/packages/kicad-kicad.xml
+ls -1 %{buildroot}%{_datadir}/mime/packages/ | grep -F '.xml' | \
     while read mimefile; do
-        mv %{buildroot}%{kicad_datadir}/mime/packages/${mimefile} \
+        mv %{buildroot}%{_datadir}/mime/packages/${mimefile} \
             %{buildroot}%{_datadir}/mime/packages/${mimefile%%%%-*}-nightly-${mimefile#*-}
     done
-rm -rf %{buildroot}%{kicad_datadir}/mime/
 
 # Desktop files
-ls -1 %{buildroot}%{kicad_datadir}/applications/ | grep -F '.desktop' | \
+ls -1 %{buildroot}%{_datadir}/applications/ | grep -F '.desktop' | \
     while read desktopfile; do
         sed -i \
             -e 's/^Exec=\([^ ]*\)\(.*\)$/Exec=\1-nightly\2/g' \
             -e 's/^Name=\(.*\)$/Name=\1 NIGHTLY/g' \
             -e 's/^Icon=\(.*\)$/Icon=\1-nightly/g' \
             -e 's/x-kicad/x-kicad-nightly/g' \
-            %{buildroot}%{kicad_datadir}/applications/${desktopfile}
-        mv %{buildroot}%{kicad_datadir}/applications/${desktopfile} \
-            %{buildroot}%{kicad_datadir}/applications/${desktopfile%%.*}-nightly.desktop
+            %{buildroot}%{_datadir}/applications/${desktopfile}
+        mv %{buildroot}%{_datadir}/applications/${desktopfile} \
+            %{buildroot}%{_datadir}/applications/${desktopfile%%.*}-nightly.desktop
         desktop-file-install \
             --dir %{buildroot}%{_datadir}/applications/ \
             --remove-category Development \
             --delete-original \
-            %{buildroot}%{kicad_datadir}/applications/${desktopfile%%.*}-nightly.desktop
+            %{buildroot}%{_datadir}/applications/${desktopfile%%.*}-nightly.desktop
     done
-rm -rf %{buildroot}%{kicad_datadir}/applications/
+
+# AppStream files
+mv %{buildroot}%{_datadir}/appdata/ %{buildroot}%{kicad_datadir}/
 
 # Library folders
 mkdir -p %{buildroot}%{_datadir}/%{name}/library/
@@ -241,6 +238,9 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 
 
 %changelog
+* Sun Feb 14 2021 Aimylios <aimylios@xxx.xx>
+- fix usage of CMAKE_INSTALL_DATADIR and CMAKE_INSTALL_DOCDIR
+
 * Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
 - change license from AGPLv3+ to GPLv3+ and include all license texts
 - add new build requirements
