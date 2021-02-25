@@ -188,7 +188,7 @@ ls -1 %{buildroot}%{_datadir}/applications/ | grep -F '.desktop' | \
     while read desktopfile; do
         sed -i \
             -e 's/^Exec=\([^ ]*\)\(.*\)$/Exec=\1-nightly\2/g' \
-            -e 's/^Name=\(.*\)$/Name=\1 NIGHTLY/g' \
+            -e 's/^Name\(.*\)=\(.*\)$/Name\1=\2 NIGHTLY/g' \
             -e 's/^Icon=\(.*\)$/Icon=\1-nightly/g' \
             -e 's/x-kicad/x-kicad-nightly/g' \
             %{buildroot}%{_datadir}/applications/${desktopfile}
@@ -238,6 +238,9 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 
 
 %changelog
+* Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
+- patch translated names in .desktop files
+
 * Sun Feb 14 2021 Aimylios <aimylios@xxx.xx>
 - fix usage of CMAKE_INSTALL_DATADIR and CMAKE_INSTALL_DOCDIR
 
