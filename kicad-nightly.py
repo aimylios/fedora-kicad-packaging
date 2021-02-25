@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from buildhelper.GitRepository import GitLabRepository
-from buildhelper.RPM import LocalBuilder, CoprBuilder
+from buildhelper.RPM import LocalBuilder, MockBuilder, CoprBuilder
 
 import argparse
 import os
@@ -55,9 +55,13 @@ cl_parser.add_argument('--force-update', help='always update SPEC files, even '
 cl_parser.add_argument('--do-not-build', help='just generate SPEC files, do '
     'not build any RPM packages', action='store_true')
 cl_parser.add_argument('--build-type', help='type of build to trigger, '
-    'default: copr', choices=['copr', 'local'], default='copr')
+    'default: copr', choices=['local', 'mock', 'copr'], default='copr')
 cl_parser.add_argument('--rpmbuild-path', help='path to RPM build environment, '
     'default: ./rpmbuild/', default=os.path.join(SCRIPT_PATH, 'rpmbuild'))
+cl_parser.add_argument('--mock-config', help='Mock configuration file, '
+    'default: default', default='default')
+cl_parser.add_argument('--mock-result-path', help='Mock result directory, '
+    'default: ./artifacts/', default=os.path.join(SCRIPT_PATH, 'artifacts'))
 cl_parser.add_argument('--copr-config', help='path to Copr configuration file, '
     'default: ~/.config/copr', default='~/.config/copr')
 cl_parser.add_argument('--copr-repository', help='Copr repository to be used, '
@@ -66,6 +70,7 @@ args = cl_parser.parse_args()
 
 # set local paths used by the script
 rpmbuild_path = os.path.abspath(os.path.expanduser(args.rpmbuild_path))
+mock_result_path = os.path.abspath(os.path.expanduser(args.mock_result_path))
 spec_path = os.path.join(rpmbuild_path, 'SPECS')
 
 # prepare build
@@ -73,6 +78,9 @@ builder = None
 if not args.do_not_build and args.build_type == 'local':
     print('Configuring local build environment...')
     builder = LocalBuilder(rpmbuild_path)
+elif not args.do_not_build and args.build_type == 'mock':
+    print('Configuring Mock build environment...')
+    builder = MockBuilder(rpmbuild_path, args.mock_config, mock_result_path)
 elif not args.do_not_build and args.build_type == 'copr':
     print('Configuring Copr build environment...')
     builder = CoprBuilder(os.path.abspath(os.path.expanduser(args.copr_config)),
