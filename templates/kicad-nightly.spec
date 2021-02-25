@@ -185,8 +185,16 @@ ls -1 %{buildroot}%{_datadir}/applications/ | grep -F '.desktop' | \
             %{buildroot}%{_datadir}/applications/${desktopfile%%.*}-nightly.desktop
     done
 
-# AppStream files
-mv %{buildroot}%{_datadir}/appdata/ %{buildroot}%{kicad_datadir}/
+# AppStream file
+pushd %{buildroot}%{_datadir}/appdata/
+sed -i \
+    -e 's/org.kicad_pcb.kicad/org.kicad_pcb.kicad_nightly/g' \
+    -e 's/<name\(.*\)>\(.*\)<\/name>/<name\1>\2 Nightly<\/name>/g' \
+    -e 's/kicad.desktop/kicad-nightly.desktop/g' \
+    -e 's/<binary>\(.*\)<\/binary>/<binary>\1-nightly<\/binary>/g' \
+    ./kicad.appdata.xml
+mv ./kicad.appdata.xml ./kicad-nightly.appdata.xml
+popd
 
 # Library folders
 mkdir -p %{buildroot}%{_datadir}/%{name}/library/
@@ -197,12 +205,13 @@ ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 
 %check
 
-appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.appdata.xml
+appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.xml
 
 
 %files
 %attr(0755, root, root) %{_bindir}/*
 %{_datadir}/%{name}/
+%{_datadir}/appdata/*.xml
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
@@ -217,6 +226,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 - patch translated names in .desktop files
 - build everything out-of-tree
 - move documentation to its own SPEC file
+- patch and install AppStream file
 
 * Sun Feb 14 2021 Aimylios <aimylios@xxx.xx>
 - fix usage of CMAKE_INSTALL_DATADIR and CMAKE_INSTALL_DOCDIR
