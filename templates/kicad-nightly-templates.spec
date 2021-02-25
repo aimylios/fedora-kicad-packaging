@@ -6,7 +6,6 @@ Name:           kicad-nightly-templates
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Templates for KiCad
-
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 

@@ -6,7 +6,6 @@ Name:           kicad-nightly-symbols
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Schematic symbols for KiCad
-
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 

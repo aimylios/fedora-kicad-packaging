@@ -11,24 +11,22 @@ Name:           kicad-nightly
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Electronic schematic diagrams and printed circuit board artwork
-
 License:        GPLv3+
 URL:            https://kicad.org/
 
 Source0:        https://gitlab.com/kicad/code/kicad/-/archive/%{commit0}/kicad-%{commit0}.tar.gz
 
+BuildRequires:  boost-devel
 BuildRequires:  chrpath
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
-BuildRequires:  gtk3-devel
-BuildRequires:  libappstream-glib
-BuildRequires:  swig
-BuildRequires:  boost-devel
 BuildRequires:  glew-devel
 BuildRequires:  glm-devel
+BuildRequires:  gtk3-devel
+BuildRequires:  libappstream-glib
 BuildRequires:  libcurl-devel
 BuildRequires:  libngspice-devel
 BuildRequires:  opencascade-devel
@@ -36,6 +34,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  python3-devel
 BuildRequires:  python3-wxpython4
 BuildRequires:  shared-mime-info
+BuildRequires:  swig
 BuildRequires:  wxGTK3-devel
 BuildRequires:  zlib-devel
 
@@ -81,7 +80,6 @@ pushd build/
     -DKICAD_SCRIPTING_WXPYTHON=ON \
     -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
-    -DKICAD_USE_OCE=OFF \
     -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=ON \
     -DKICAD_BUILD_QA_TESTS=OFF \
@@ -118,6 +116,8 @@ chrpath --delete %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-p
 %py_byte_compile %{python3} %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/
 
 # Fallback links
+mkdir -p %{buildroot}%{kicad_datadir}
+ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 mkdir -p %{buildroot}%{kicad_docdir}
 ln -s -r %{buildroot}%{_docdir}/%{name}/ %{buildroot}%{kicad_docdir}/kicad
 
@@ -142,48 +142,50 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
     done
 
 # Icons
-ls -1 %{buildroot}%{_datadir}/icons/hicolor/ | \
+pushd %{buildroot}%{_datadir}/icons/hicolor/
+ls -1 | \
     while read size; do
-        ls -1 %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/ | \
+        ls -1 ${size}/apps/ | \
             while read icon; do
-                mv %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/${icon} \
-                    %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/${icon%%.*}-nightly.${icon##*.}
+                mv ${size}/apps/${icon} ${size}/apps/${icon%%.*}-nightly.${icon##*.}
             done
-        ls -1 %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/ | grep 'kicad' | \
+        ls -1 ${size}/mimetypes/ | grep 'kicad' | \
             while read icon; do
-                mv %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/${icon} \
-                    %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/${icon%%%%kicad*}kicad-nightly${icon#*kicad}
+                mv ${size}/mimetypes/${icon} ${size}/mimetypes/${icon%%%%kicad*}kicad-nightly${icon#*kicad}
             done
     done
+popd
 
 # MIME files
+pushd %{buildroot}%{_datadir}/mime/packages/
 sed -i \
     -e 's/x-kicad/x-kicad-nightly/g' \
     -e 's/KiCad/KiCad Nightly/g' \
-    %{buildroot}%{_datadir}/mime/packages/kicad-kicad.xml
-ls -1 %{buildroot}%{_datadir}/mime/packages/ | grep -F '.xml' | \
+    kicad-kicad.xml
+ls -1 | grep -F '.xml' | \
     while read mimefile; do
-        mv %{buildroot}%{_datadir}/mime/packages/${mimefile} \
-            %{buildroot}%{_datadir}/mime/packages/${mimefile%%%%-*}-nightly-${mimefile#*-}
+        mv ${mimefile} ${mimefile%%%%-*}-nightly-${mimefile#*-}
     done
+popd
 
 # Desktop files
-ls -1 %{buildroot}%{_datadir}/applications/ | grep -F '.desktop' | \
+pushd %{buildroot}%{_datadir}/applications/
+ls -1 | grep -F '.desktop' | \
     while read desktopfile; do
         sed -i \
             -e 's/^Exec=\([^ ]*\)\(.*\)$/Exec=\1-nightly\2/g' \
             -e 's/^Name\(.*\)=\(.*\)$/Name\1=\2 NIGHTLY/g' \
             -e 's/^Icon=\(.*\)$/Icon=\1-nightly/g' \
             -e 's/x-kicad/x-kicad-nightly/g' \
-            %{buildroot}%{_datadir}/applications/${desktopfile}
-        mv %{buildroot}%{_datadir}/applications/${desktopfile} \
-            %{buildroot}%{_datadir}/applications/${desktopfile%%.*}-nightly.desktop
+            ${desktopfile}
+        mv ${desktopfile} ${desktopfile%%.*}-nightly.desktop
         desktop-file-install \
             --dir %{buildroot}%{_datadir}/applications/ \
             --remove-category Development \
             --delete-original \
-            %{buildroot}%{_datadir}/applications/${desktopfile%%.*}-nightly.desktop
+            ${desktopfile%%.*}-nightly.desktop
     done
+popd
 
 # AppStream file
 pushd %{buildroot}%{_datadir}/appdata/
@@ -192,15 +194,14 @@ sed -i \
     -e 's/<name\(.*\)>\(.*\)<\/name>/<name\1>\2 Nightly<\/name>/g' \
     -e 's/kicad.desktop/kicad-nightly.desktop/g' \
     -e 's/<binary>\(.*\)<\/binary>/<binary>\1-nightly<\/binary>/g' \
-    ./kicad.appdata.xml
-mv ./kicad.appdata.xml ./kicad-nightly.appdata.xml
+    kicad.appdata.xml
+mv kicad.appdata.xml kicad-nightly.appdata.xml
 popd
 
 # Library folders
 mkdir -p %{buildroot}%{_datadir}/%{name}/library/
 mkdir -p %{buildroot}%{_datadir}/%{name}/modules/
 mkdir -p %{buildroot}%{_datadir}/%{name}/3dmodels/
-ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 
 
 %check
@@ -227,6 +228,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 - build everything out-of-tree
 - move documentation to its own SPEC file
 - patch and install AppStream file
+- clean up and optimise SPEC file
 
 * Sun Feb 14 2021 Aimylios <aimylios@xxx.xx>
 - fix usage of CMAKE_INSTALL_DATADIR and CMAKE_INSTALL_DOCDIR

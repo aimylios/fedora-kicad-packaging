@@ -6,7 +6,6 @@ Name:           kicad-nightly-footprints
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Footprints for KiCad
-
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 

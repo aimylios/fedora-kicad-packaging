@@ -6,7 +6,6 @@ Name:           kicad-nightly-packages3d
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        3D models for KiCad
-
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 
