@@ -1,11 +1,11 @@
 %global snapdate @SNAPSHOTDATE@
 %global commit0 @COMMITHASH0@
-%global commit1 @COMMITHASH1@
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 %global kicad_prefix %{_prefix}/lib/kicad-nightly
 %global kicad_bindir %{kicad_prefix}/bin
 %global kicad_datadir %{kicad_prefix}/share
+%global kicad_docdir %{kicad_prefix}/share/doc
 
 Name:           kicad-nightly
 Version:        @VERSION@
@@ -16,7 +16,6 @@ License:        GPLv3+
 URL:            https://www.kicad-pcb.org
 
 Source0:        https://gitlab.com/kicad/code/kicad/-/archive/%{commit0}/kicad-%{commit0}.tar.gz
-Source1:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit1}/kicad-doc-%{commit1}.tar.gz
 
 BuildRequires:  chrpath
 BuildRequires:  cmake
@@ -40,10 +39,6 @@ BuildRequires:  shared-mime-info
 BuildRequires:  wxGTK3-devel
 BuildRequires:  zlib-devel
 
-# Documentation
-BuildRequires:  asciidoc
-BuildRequires:  po4a
-
 Requires:       electronics-menu
 Requires:       python3-wxpython4
 
@@ -65,21 +60,10 @@ latest stable release. This can potentially lead to a corruption or even loss of
 data. Always take a backup of your files before opening them with the
 applications from this package.
 
-%package doc
-Summary:        Documentation for KiCad
-License:        GPLv3+
-BuildArch:      noarch
-Recommends:     kicad-nightly
-
-%description doc
-KiCad is an open-source software tool for the creation of electronic schematic
-diagrams and printed circuit board artwork. This package provides the
-documentation for KiCad in multiple languages.
-
 
 %prep
 
-%setup -q -n kicad-%{commit0} -a 1
+%autosetup -n kicad-%{commit0}
 
 # Set the version of the application to the version of the package
 sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
@@ -115,16 +99,6 @@ pushd build/
 %cmake_build
 popd
 
-# Documentation (HTML only)
-mkdir -p kicad-doc-%{commit1}/build/
-pushd kicad-doc-%{commit1}/build/
-%cmake \
-    -DKICAD_DOC_PATH=%{_docdir}/%{name} \
-    -DBUILD_FORMATS=html \
-    ..
-%cmake_build
-popd
-
 
 %install
 
@@ -132,6 +106,7 @@ popd
 pushd build/
 %cmake_install
 popd
+cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Binaries must be executable to be detected by find-debuginfo.sh
 chmod +x %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/_pcbnew.so
@@ -141,6 +116,10 @@ chrpath --delete %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-p
 
 # Python scripts in non-standard paths require manual byte compilation
 %py_byte_compile %{python3} %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/
+
+# Fallback links
+mkdir -p %{buildroot}%{kicad_docdir}
+ln -s -r %{buildroot}%{_docdir}/%{name}/ %{buildroot}%{kicad_docdir}/kicad
 
 # Wrapper scripts
 mkdir -p %{buildroot}%{_bindir}
@@ -215,12 +194,6 @@ mkdir -p %{buildroot}%{_datadir}/%{name}/modules/
 mkdir -p %{buildroot}%{_datadir}/%{name}/3dmodels/
 ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 
-# Documentation
-pushd kicad-doc-%{commit1}/build/
-%cmake_install
-popd
-cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
-
 
 %check
 
@@ -234,18 +207,16 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/mime/packages/*.xml
+%{_docdir}/%{name}/
 %{kicad_prefix}/
 %license LICENSE*
-
-%files doc
-%{_docdir}/%{name}/
-%license kicad-doc-%{commit1}/LICENSE.adoc
 
 
 %changelog
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - patch translated names in .desktop files
 - build everything out-of-tree
+- move documentation to its own SPEC file
 
 * Sun Feb 14 2021 Aimylios <aimylios@xxx.xx>
 - fix usage of CMAKE_INSTALL_DATADIR and CMAKE_INSTALL_DOCDIR

@@ -46,7 +46,7 @@ def export_spec_file(dst_path, name, version, *args):
 # configure command line options
 cl_parser = argparse.ArgumentParser(description='Build KiCad nightly RPMs')
 cl_parser.add_argument('--skip', help='do not generate SPEC file for specified '
-    'component', choices=['kicad', 'templates', 'symbols', 'footprints',
+    'component', choices=['kicad', 'doc', 'templates', 'symbols', 'footprints',
     'packages3d'], action='append')
 cl_parser.add_argument('--skip-libraries', help='do not generate SPEC files '
     'for templates, symbols, footprints, and 3D models', action='store_true')
@@ -96,8 +96,10 @@ print('Initialising remote repositories...')
 components = []
 if not args.skip or 'kicad' not in args.skip:
     kicad = GitLabRepository(GITLAB_ID_KICAD)
+    components.append(['kicad-nightly', pkg_version, kicad])
+if not args.skip or 'doc' not in args.skip:
     kicad_doc = GitLabRepository(GITLAB_ID_KICAD_DOC)
-    components.append(['kicad-nightly', pkg_version, kicad, kicad_doc])
+    components.append(['kicad-nightly-doc', pkg_version, kicad_doc])
 if not args.skip_libraries:
     if not args.skip or 'templates' not in args.skip:
         kicad_templates = GitLabRepository(GITLAB_ID_KICAD_TEMPLATES)
