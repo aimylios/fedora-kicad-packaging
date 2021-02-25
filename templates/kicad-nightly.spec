@@ -88,6 +88,8 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
 %build
 
 # KiCad application
+mkdir -p build/
+pushd build/
 %cmake \
     -DKICAD_SCRIPTING=ON \
     -DKICAD_SCRIPTING_MODULES=ON \
@@ -109,8 +111,9 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DDEFAULT_INSTALL_PATH=%{kicad_prefix} \
     -DKICAD_DATA=%{_datadir}/%{name} \
     -DKICAD_DOCS=%{_docdir}/%{name} \
-    .
+    ..
 %cmake_build
+popd
 
 # Documentation (HTML only)
 mkdir -p kicad-doc-%{commit1}/build/
@@ -126,7 +129,9 @@ popd
 %install
 
 # KiCad application
+pushd build/
 %cmake_install
+popd
 
 # Binaries must be executable to be detected by find-debuginfo.sh
 chmod +x %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/_pcbnew.so
@@ -240,6 +245,7 @@ appstream-util validate-relax --nonet %{buildroot}%{kicad_datadir}/appdata/*.app
 %changelog
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - patch translated names in .desktop files
+- build everything out-of-tree
 
 * Sun Feb 14 2021 Aimylios <aimylios@xxx.xx>
 - fix usage of CMAKE_INSTALL_DATADIR and CMAKE_INSTALL_DOCDIR

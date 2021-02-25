@@ -33,8 +33,8 @@ which are part of the official KiCad libraries.
 
 %build
 
-mkdir build
-pushd build
+mkdir build/
+pushd build/
 %cmake \
     -DKICAD_DATA=%{_datadir}/kicad-nightly \
     ..
@@ -44,7 +44,7 @@ popd
 
 %install
 
-pushd build
+pushd build/
 %cmake_install
 popd
 
