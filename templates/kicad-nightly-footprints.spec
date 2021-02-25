@@ -23,8 +23,6 @@ KiCad is an open-source software tool for the creation of electronic schematic
 diagrams and printed circuit board artwork. This package provides the footprints
 which are part of the official KiCad libraries.
 
-%global debug_package %{nil}
-
 
 %prep
 
