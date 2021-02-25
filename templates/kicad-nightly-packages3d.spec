@@ -8,7 +8,7 @@ Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        3D models for KiCad
 
 License:        CC-BY-SA
-URL:            https://kicad-pcb.org/libraries/
+URL:            https://kicad.org/libraries/
 
 Source0:        https://gitlab.com/kicad/libraries/kicad-packages3D/-/archive/%{commit0}/kicad-packages3D-%{commit0}.tar.gz
 

@@ -13,7 +13,7 @@ Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Electronic schematic diagrams and printed circuit board artwork
 
 License:        GPLv3+
-URL:            https://www.kicad-pcb.org
+URL:            https://kicad.org/
 
 Source0:        https://gitlab.com/kicad/code/kicad/-/archive/%{commit0}/kicad-%{commit0}.tar.gz
 

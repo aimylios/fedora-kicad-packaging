@@ -8,7 +8,7 @@ Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Schematic symbols for KiCad
 
 License:        CC-BY-SA
-URL:            https://kicad-pcb.org/libraries/
+URL:            https://kicad.org/libraries/
 
 Source0:        https://gitlab.com/kicad/libraries/kicad-symbols/-/archive/%{commit0}/kicad-symbols-%{commit0}.tar.gz
 
