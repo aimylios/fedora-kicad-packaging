@@ -9,7 +9,7 @@ Summary:        Templates for KiCad
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 
-Source0:        https://gitlab.com/kicad/libraries/kicad-templates/-/archive/%{commit0}/kicad-templates-%{commit0}.tar.gz
+Source0:        https://gitlab.com/kicad/libraries/kicad-templates/-/archive/%{commit0}/kicad-templates-%{commit0}.tar.bz2
 
 BuildArch:      noarch
 

@@ -9,7 +9,7 @@ Summary:        Documentation for KiCad
 License:        GPLv3+
 URL:            https://docs.kicad.org/
 
-Source0:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit0}/kicad-doc-%{commit0}.tar.gz
+Source0:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit0}/kicad-doc-%{commit0}.tar.bz2
 
 BuildArch:      noarch
 

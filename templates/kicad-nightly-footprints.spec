@@ -9,7 +9,7 @@ Summary:        Footprints for KiCad
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 
-Source0:        https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/%{commit0}/kicad-footprints-%{commit0}.tar.gz
+Source0:        https://gitlab.com/kicad/libraries/kicad-footprints/-/archive/%{commit0}/kicad-footprints-%{commit0}.tar.bz2
 
 BuildArch:      noarch
 
