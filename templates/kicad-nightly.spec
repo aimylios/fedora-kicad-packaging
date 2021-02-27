@@ -125,7 +125,6 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
             echo ''
             echo 'export LD_LIBRARY_PATH=%{kicad_prefix}/%{_lib}/:%{kicad_prefix}/lib/'
             echo ''
-            echo '[ -z "${KICAD_PATH}" ] && export KICAD_PATH=%{_datadir}/%{name}/'
             echo '[ -z "${KICAD6_SCRIPTING_DIR}" ] && export KICAD6_SCRIPTING_DIR=%{_datadir}/%{name}/scripting/'
             echo '[ -z "${KICAD6_TEMPLATE_DIR}" ] && export KICAD6_TEMPLATE_DIR=%{_datadir}/%{name}/template/'
             echo '[ -z "${KICAD6_SYMBOL_DIR}" ] && export KICAD6_SYMBOL_DIR=%{_datadir}/%{name}/library/'
@@ -220,6 +219,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 %changelog
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - rely on %%cmake macro for out-of-tree build
+- drop unused KICAD_PATH environment variable
 
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - patch translated names in .desktop files
