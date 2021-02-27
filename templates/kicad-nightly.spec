@@ -167,15 +167,15 @@ pushd %{buildroot}%{_datadir}/applications/
 ls -1 | grep -F '.desktop' | \
     while read desktopfile; do
         sed -i \
-            -e 's/^Exec=\([^ ]*\)\(.*\)$/Exec=\1-nightly\2/g' \
             -e 's/^Name\(.*\)=\(.*\)$/Name\1=\2 NIGHTLY/g' \
             -e 's/^Icon=\(.*\)$/Icon=\1-nightly/g' \
-            -e 's/x-kicad/x-kicad-nightly/g' \
+            -e 's/^Exec=\([^ ]*\)\(.*\)$/Exec=\1-nightly\2/g' \
+            -e 's/^MimeType=\(.*kicad\)\(.*;\)$/MimeType=\1\2\1-nightly\2/g' \
             ${desktopfile}
         mv ${desktopfile} ${desktopfile%%.*}-nightly.desktop
         desktop-file-install \
             --dir %{buildroot}%{_datadir}/applications/ \
-            --remove-category Development \
+            --remove-category Science \
             --delete-original \
             ${desktopfile%%.*}-nightly.desktop
     done
@@ -220,6 +220,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - rely on %%cmake macro for out-of-tree build
 - drop unused KICAD_PATH environment variable
+- register all MIME types in launchers
 
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - patch translated names in .desktop files
