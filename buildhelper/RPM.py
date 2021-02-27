@@ -1,5 +1,7 @@
 
 
+# SPDX-License-Identifier: MIT
+
 import copr.v3 as copr
 import os
 import subprocess

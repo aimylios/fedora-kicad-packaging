@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# SPDX-License-Identifier: MIT
+
 from buildhelper.GitRepository import GitLabRepository
 from buildhelper.RPM import LocalBuilder, MockBuilder, CoprBuilder
 
