@@ -30,20 +30,15 @@ which are part of the official KiCad libraries.
 
 %build
 
-mkdir build/
-pushd build/
 %cmake \
     -DKICAD_DATA=%{_datadir}/kicad-nightly \
-    ..
+    .
 %cmake_build
-popd
 
 
 %install
 
-pushd build/
 %cmake_install
-popd
 
 
 %files
@@ -53,6 +48,9 @@ popd
 
 
 %changelog
+* Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
+- rely on %%cmake macro for out-of-tree build
+
 * Sat Feb 13 2021 Aimylios <aimylios@xxx.xx>
 - get sources from GitLab
 - switch to new installation path

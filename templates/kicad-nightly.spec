@@ -71,8 +71,6 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
 %build
 
 # KiCad application
-mkdir -p build/
-pushd build/
 %cmake \
     -DKICAD_SCRIPTING=ON \
     -DKICAD_SCRIPTING_MODULES=ON \
@@ -93,17 +91,14 @@ pushd build/
     -DDEFAULT_INSTALL_PATH=%{kicad_prefix} \
     -DKICAD_DATA=%{_datadir}/%{name} \
     -DKICAD_DOCS=%{_docdir}/%{name} \
-    ..
+    .
 %cmake_build
-popd
 
 
 %install
 
 # KiCad application
-pushd build/
 %cmake_install
-popd
 cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
 # Binaries must be executable to be detected by find-debuginfo.sh
@@ -223,6 +218,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 
 
 %changelog
+* Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
+- rely on %%cmake macro for out-of-tree build
+
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - patch translated names in .desktop files
 - build everything out-of-tree

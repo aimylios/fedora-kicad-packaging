@@ -33,21 +33,16 @@ documentation for KiCad in multiple languages.
 %build
 
 # HTML only
-mkdir -p build/
-pushd build/
 %cmake \
     -DKICAD_DOC_PATH=%{_docdir}/kicad-nightly/help \
     -DBUILD_FORMATS=html \
-    ..
+    .
 %cmake_build
-popd
 
 
 %install
 
-pushd build/
 %cmake_install
-popd
 
 
 %files
@@ -58,6 +53,7 @@ popd
 %changelog
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - add CC-BY to License tag
+- rely on %%cmake macro for out-of-tree build
 
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - move documentation to its own SPEC file
