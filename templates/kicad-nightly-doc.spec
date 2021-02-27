@@ -6,7 +6,7 @@ Name:           kicad-nightly-doc
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
 Summary:        Documentation for KiCad
-License:        GPLv3+
+License:        GPLv3+ or CC-BY
 URL:            https://docs.kicad.org/
 
 Source0:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit0}/kicad-doc-%{commit0}.tar.bz2
@@ -56,5 +56,8 @@ popd
 
 
 %changelog
+* Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
+- add CC-BY to License tag
+
 * Thu Feb 25 2021 Aimylios <aimylios@xxx.xx>
 - move documentation to its own SPEC file
