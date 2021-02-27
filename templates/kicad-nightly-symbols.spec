@@ -18,9 +18,10 @@ BuildRequires:  cmake
 Recommends:     kicad-nightly
 
 %description
-KiCad is an open-source software tool for the creation of electronic schematic
-diagrams and printed circuit board artwork. This package provides the schematic
-symbols which are part of the official KiCad libraries.
+KiCad is an open-source electronic design automation software suite for the
+creation of electronic schematic diagrams and printed circuit board artwork.
+This package provides the schematic symbols which are part of the official KiCad
+libraries.
 
 
 %prep

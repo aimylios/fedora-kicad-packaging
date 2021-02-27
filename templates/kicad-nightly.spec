@@ -10,7 +10,7 @@
 Name:           kicad-nightly
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
-Summary:        Electronic schematic diagrams and printed circuit board artwork
+Summary:        EDA software suite for creation of schematic diagrams and PCBs
 License:        GPLv3+
 URL:            https://kicad.org/
 
@@ -44,14 +44,8 @@ Requires:       python3-wxpython4
 Suggests:       kicad
 
 %description
-KiCad is an open-source software tool for the creation of electronic schematic
-diagrams and PCB artwork. It does not present any board-size limitation and it
-can handle up to 32 copper layers, 14 technical layers and 4 auxiliary layers.
-Beneath its singular surface, KiCad incorporates an elegant ensemble of the
-following software tools: KiCad (project manager), Eeschema (schematic editor
-and symbol editor), Pcbnew (circuit board layout editor and footprint editor)
-and GerbView (Gerber viewer).
-
+KiCad is an open-source electronic design automation software suite for the
+creation of electronic schematic diagrams and printed circuit board artwork.
 This package provides a nightly development build of KiCad and can be installed
 in parallel to the stable release package. Nightly builds are untested, might be
 affected by serious bugs and/or produce files that are incompatible with the
@@ -64,7 +58,7 @@ applications from this package.
 
 %autosetup -n kicad-%{commit0}
 
-# Set the version of the application to the version of the package
+# set the version of the application to the version of the package
 sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
 
 
@@ -101,22 +95,22 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
 %cmake_install
 cp -p AUTHORS.txt %{buildroot}%{_docdir}/%{name}/
 
-# Binaries must be executable to be detected by find-debuginfo.sh
+# binaries must be executable to be detected by find-debuginfo.sh
 chmod +x %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/_pcbnew.so
 
-# Binaries are not allowed to contain rpaths
+# binaries are not allowed to contain rpaths
 chrpath --delete %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/_pcbnew.so
 
 # Python scripts in non-standard paths require manual byte compilation
 %py_byte_compile %{python3} %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/
 
-# Fallback links
+# make available hardcoded paths relative to %%{kicad_bindir}
 mkdir -p %{buildroot}%{kicad_datadir}
 ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 mkdir -p %{buildroot}%{kicad_docdir}
 ln -s -r %{buildroot}%{_docdir}/%{name}/ %{buildroot}%{kicad_docdir}/kicad
 
-# Wrapper scripts
+# wrapper scripts
 mkdir -p %{buildroot}%{_bindir}
 ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
     while read application; do
@@ -135,7 +129,7 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
         ) > %{buildroot}%{_bindir}/${application}-nightly
     done
 
-# Icons
+# icons
 pushd %{buildroot}%{_datadir}/icons/hicolor/
 ls -1 | \
     while read size; do
@@ -162,7 +156,7 @@ ls -1 | grep -F '.xml' | \
     done
 popd
 
-# Desktop files
+# application launchers
 pushd %{buildroot}%{_datadir}/applications/
 ls -1 | grep -F '.desktop' | \
     while read desktopfile; do
@@ -181,7 +175,7 @@ ls -1 | grep -F '.desktop' | \
     done
 popd
 
-# AppStream file
+# AppStream metainfo file
 pushd %{buildroot}%{_datadir}/appdata/
 sed -i \
     -e 's/org.kicad_pcb.kicad/org.kicad_pcb.kicad_nightly/g' \
@@ -192,7 +186,7 @@ sed -i \
 mv kicad.appdata.xml kicad-nightly.appdata.xml
 popd
 
-# Library folders
+# create library folders
 mkdir -p %{buildroot}%{_datadir}/%{name}/library/
 mkdir -p %{buildroot}%{_datadir}/%{name}/modules/
 mkdir -p %{buildroot}%{_datadir}/%{name}/3dmodels/

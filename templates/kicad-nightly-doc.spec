@@ -20,9 +20,10 @@ BuildRequires:  po4a
 Recommends:     kicad-nightly
 
 %description
-KiCad is an open-source software tool for the creation of electronic schematic
-diagrams and printed circuit board artwork. This package provides the
-documentation for KiCad in multiple languages.
+KiCad is an open-source electronic design automation software suite for the
+creation of electronic schematic diagrams and printed circuit board artwork.
+This package provides the documentation for the nightly development build of
+KiCad in multiple languages.
 
 
 %prep

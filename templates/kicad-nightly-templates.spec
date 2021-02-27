@@ -5,7 +5,7 @@
 Name:           kicad-nightly-templates
 Version:        @VERSION@
 Release:        1.%{snapdate}git%{shortcommit0}%{?dist}
-Summary:        Templates for KiCad
+Summary:        Drawing sheets and project templates for KiCad
 License:        CC-BY-SA
 URL:            https://kicad.org/libraries/
 
@@ -18,9 +18,10 @@ BuildRequires:  cmake
 Recommends:     kicad-nightly
 
 %description
-KiCad is an open-source software tool for the creation of electronic schematic
-diagrams and printed circuit board artwork. This package provides the templates
-which are part of the official KiCad libraries.
+KiCad is an open-source electronic design automation software suite for the
+creation of electronic schematic diagrams and printed circuit board artwork.
+This package provides the drawing sheets and project templates which are part of
+the official KiCad libraries.
 
 
 %prep
