@@ -73,7 +73,7 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
     -DKICAD_SCRIPTING_ACTION_MENU=ON \
     -DKICAD_USE_OCC=ON \
-    -DKICAD_INSTALL_DEMOS=ON \
+    -DKICAD_INSTALL_DEMOS=OFF \
     -DKICAD_BUILD_QA_TESTS=OFF \
     -DKICAD_SPICE=ON \
     -DKICAD_BUILD_I18N=ON \
@@ -211,6 +211,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 
 
 %changelog
+* Sun Feb 28 2021 Aimylios <aimylios@xxx.xx>
+- do not install demo projects
+
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - rely on %%cmake macro for out-of-tree build
 - drop unused KICAD_PATH environment variable
