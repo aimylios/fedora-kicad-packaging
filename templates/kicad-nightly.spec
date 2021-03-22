@@ -4,7 +4,6 @@
 
 %global kicad_prefix %{_prefix}/lib/kicad-nightly
 %global kicad_bindir %{kicad_prefix}/bin
-%global kicad_datadir %{kicad_prefix}/share
 %global kicad_docdir %{kicad_prefix}/share/doc
 
 Name:           kicad-nightly
@@ -105,8 +104,6 @@ chrpath --delete %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-p
 %py_byte_compile %{python3} %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/
 
 # make available hardcoded paths relative to %%{kicad_bindir}
-mkdir -p %{buildroot}%{kicad_datadir}
-ln -s -r %{buildroot}%{_datadir}/%{name}/ %{buildroot}%{kicad_datadir}/kicad
 mkdir -p %{buildroot}%{kicad_docdir}
 ln -s -r %{buildroot}%{_docdir}/%{name}/ %{buildroot}%{kicad_docdir}/kicad
 
@@ -118,12 +115,6 @@ ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
             echo '#!/usr/bin/sh'
             echo ''
             echo 'export LD_LIBRARY_PATH=%{kicad_prefix}/%{_lib}/:%{kicad_prefix}/lib/'
-            echo ''
-            echo '[ -z "${KICAD6_SCRIPTING_DIR}" ] && export KICAD6_SCRIPTING_DIR=%{_datadir}/%{name}/scripting/'
-            echo '[ -z "${KICAD6_TEMPLATE_DIR}" ] && export KICAD6_TEMPLATE_DIR=%{_datadir}/%{name}/template/'
-            echo '[ -z "${KICAD6_SYMBOL_DIR}" ] && export KICAD6_SYMBOL_DIR=%{_datadir}/%{name}/library/'
-            echo '[ -z "${KICAD6_FOOTPRINT_DIR}" ] && export KICAD6_FOOTPRINT_DIR=%{_datadir}/%{name}/modules/'
-            echo '[ -z "${KICAD6_3DMODEL_DIR}" ] && export KICAD6_3DMODEL_DIR=%{_datadir}/%{name}/3dmodels/'
             echo ''
             echo "%{kicad_bindir}/${application} \"\$@\""
         ) > %{buildroot}%{_bindir}/${application}-nightly
@@ -211,6 +202,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 
 
 %changelog
+* Mon Mar 22 2021 Aimylios <aimylios@xxx.xx>
+- remove workarounds to help KiCad find the stock libraries
+
 * Sun Feb 28 2021 Aimylios <aimylios@xxx.xx>
 - do not install demo projects
 
