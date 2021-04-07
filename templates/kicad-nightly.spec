@@ -19,7 +19,6 @@ BuildRequires:  boost-devel
 BuildRequires:  chrpath
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
-BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
 BuildRequires:  glew-devel
@@ -202,6 +201,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 
 
 %changelog
+* Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
+- drop doxygen dependency
+
 * Mon Mar 22 2021 Aimylios <aimylios@xxx.xx>
 - remove workarounds to help KiCad find the stock libraries
 
