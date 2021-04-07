@@ -48,10 +48,13 @@ KiCad in multiple languages.
 
 %files
 %{_docdir}/kicad-nightly/help/
-%license LICENSE.adoc
+%license LICENSE*
 
 
 %changelog
+* Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
+- include actual license texts (available since 4ab0fd4)
+
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - add CC-BY to License tag
 - rely on %%cmake macro for out-of-tree build
