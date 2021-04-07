@@ -27,6 +27,7 @@ BuildRequires:  gtk3-devel
 BuildRequires:  libappstream-glib
 BuildRequires:  libcurl-devel
 BuildRequires:  libngspice-devel
+BuildRequires:  make
 BuildRequires:  opencascade-devel
 BuildRequires:  openssl-devel
 BuildRequires:  python3-devel
@@ -82,8 +83,7 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
     -DCMAKE_INSTALL_DOCDIR=%{_docdir} \
     -DDEFAULT_INSTALL_PATH=%{kicad_prefix} \
     -DKICAD_DATA=%{_datadir}/%{name} \
-    -DKICAD_DOCS=%{_docdir}/%{name} \
-    .
+    -DKICAD_DOCS=%{_docdir}/%{name}
 %cmake_build
 
 
@@ -203,6 +203,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 %changelog
 * Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
 - drop doxygen dependency
+- fix usage of %%cmake macro
+- add make as explicit build-time dependency
 
 * Mon Mar 22 2021 Aimylios <aimylios@xxx.xx>
 - remove workarounds to help KiCad find the stock libraries

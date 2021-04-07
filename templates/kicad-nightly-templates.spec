@@ -14,6 +14,7 @@ Source0:        https://gitlab.com/kicad/libraries/kicad-templates/-/archive/%{c
 BuildArch:      noarch
 
 BuildRequires:  cmake
+BuildRequires:  make
 
 Recommends:     kicad-nightly
 
@@ -31,9 +32,7 @@ the official KiCad libraries.
 
 %build
 
-%cmake \
-    -DKICAD_DATA=%{_datadir}/kicad-nightly \
-    .
+%cmake -DKICAD_DATA=%{_datadir}/kicad-nightly
 %cmake_build
 
 
@@ -49,6 +48,10 @@ the official KiCad libraries.
 
 
 %changelog
+* Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
+- fix usage of %%cmake macro
+- add make as explicit build-time dependency
+
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - rely on %%cmake macro for out-of-tree build
 

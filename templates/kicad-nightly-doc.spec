@@ -15,6 +15,7 @@ BuildArch:      noarch
 
 BuildRequires:  asciidoc
 BuildRequires:  cmake
+BuildRequires:  make
 BuildRequires:  po4a
 
 Recommends:     kicad-nightly
@@ -36,8 +37,7 @@ KiCad in multiple languages.
 # HTML only
 %cmake \
     -DKICAD_DOC_PATH=%{_docdir}/kicad-nightly/help \
-    -DBUILD_FORMATS=html \
-    .
+    -DBUILD_FORMATS=html
 %cmake_build
 
 
@@ -54,6 +54,8 @@ KiCad in multiple languages.
 %changelog
 * Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
 - include actual license texts (available since 4ab0fd4)
+- fix usage of %%cmake macro
+- add make as explicit build-time dependency
 
 * Sat Feb 27 2021 Aimylios <aimylios@xxx.xx>
 - add CC-BY to License tag
