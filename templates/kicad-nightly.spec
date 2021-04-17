@@ -166,14 +166,14 @@ ls -1 | grep -F '.desktop' | \
 popd
 
 # AppStream metainfo file
-pushd %{buildroot}%{_datadir}/appdata/
+pushd %{buildroot}%{_metainfodir}
 sed -i \
-    -e 's/org.kicad_pcb.kicad/org.kicad_pcb.kicad_nightly/g' \
+    -e 's/org.kicad.kicad/org.kicad.kicad-nightly/g' \
     -e 's/<name\(.*\)>\(.*\)<\/name>/<name\1>\2 Nightly<\/name>/g' \
-    -e 's/kicad.desktop/kicad-nightly.desktop/g' \
     -e 's/<binary>\(.*\)<\/binary>/<binary>\1-nightly<\/binary>/g' \
-    kicad.appdata.xml
-mv kicad.appdata.xml kicad-nightly.appdata.xml
+    -e 's/x-kicad/x-kicad-nightly/g' \
+    org.kicad.kicad.metainfo.xml
+mv org.kicad.kicad.metainfo.xml org.kicad.kicad-nightly.metainfo.xml
 popd
 
 # create library folders
@@ -184,23 +184,26 @@ mkdir -p %{buildroot}%{_datadir}/%{name}/3dmodels/
 
 %check
 
-appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.xml
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.metainfo.xml
 
 
 %files
 %attr(0755, root, root) %{_bindir}/*
 %{_datadir}/%{name}/
-%{_datadir}/appdata/*.xml
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.*
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-*.*
 %{_datadir}/mime/packages/*.xml
 %{_docdir}/%{name}/
+%{_metainfodir}/*.metainfo.xml
 %{kicad_prefix}/
 %license LICENSE*
 
 
 %changelog
+* Sat Apr 17 2021 Aimylios <aimylios@xxx.xx>
+- handle updated AppStream metainfo file
+
 * Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
 - drop doxygen dependency
 - fix usage of %%cmake macro
