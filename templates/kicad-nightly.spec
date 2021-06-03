@@ -3,8 +3,6 @@
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 %global kicad_prefix %{_prefix}/lib/kicad-nightly
-%global kicad_bindir %{kicad_prefix}/bin
-%global kicad_docdir %{kicad_prefix}/share/doc
 
 Name:           kicad-nightly
 Version:        @VERSION@
@@ -97,20 +95,16 @@ chrpath --delete %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-p
 # Python scripts in non-standard paths require manual byte compilation
 %py_byte_compile %{python3} %{buildroot}%{kicad_prefix}/lib/python%{python3_version}/site-packages/
 
-# make available hardcoded paths relative to %%{kicad_bindir}
-mkdir -p %{buildroot}%{kicad_docdir}
-ln -s -r %{buildroot}%{_docdir}/%{name}/ %{buildroot}%{kicad_docdir}/kicad
-
 # wrapper scripts
 mkdir -p %{buildroot}%{_bindir}
-ls -1 %{buildroot}%{kicad_bindir}/ | grep -v -F '.kiface' | \
+ls -1 %{buildroot}%{kicad_prefix}/bin/ | grep -v -F '.kiface' | \
     while read application; do
         (
             echo '#!/usr/bin/sh'
             echo ''
             echo 'export LD_LIBRARY_PATH=%{kicad_prefix}/%{_lib}/:%{kicad_prefix}/lib/'
             echo ''
-            echo "%{kicad_bindir}/${application} \"\$@\""
+            echo "%{kicad_prefix}/bin/${application} \"\$@\""
         ) > %{buildroot}%{_bindir}/${application}-nightly
     done
 
@@ -198,6 +192,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.metainfo.xml
 %changelog
 * Thu Jun 3 2021 Aimylios <aimylios@xxx.xx>
 - remove obsolete build options related to Python
+- remove documentation symlink
 
 * Sat Apr 17 2021 Aimylios <aimylios@xxx.xx>
 - handle updated AppStream metainfo file
