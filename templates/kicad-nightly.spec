@@ -65,12 +65,7 @@ sed -i 's/-unknown/-%{release}/g' CMakeModules/KiCadVersion.cmake
 
 # KiCad application
 %cmake \
-    -DKICAD_SCRIPTING=ON \
-    -DKICAD_SCRIPTING_MODULES=ON \
-    -DKICAD_SCRIPTING_PYTHON3=ON \
     -DKICAD_SCRIPTING_WXPYTHON=ON \
-    -DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON \
-    -DKICAD_SCRIPTING_ACTION_MENU=ON \
     -DKICAD_USE_OCC=ON \
     -DKICAD_INSTALL_DEMOS=OFF \
     -DKICAD_BUILD_QA_TESTS=OFF \
@@ -201,6 +196,9 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.metainfo.xml
 
 
 %changelog
+* Thu Jun 3 2021 Aimylios <aimylios@xxx.xx>
+- remove obsolete build options related to Python
+
 * Sat Apr 17 2021 Aimylios <aimylios@xxx.xx>
 - handle updated AppStream metainfo file
 
