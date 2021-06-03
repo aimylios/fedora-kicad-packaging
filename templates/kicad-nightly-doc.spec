@@ -13,10 +13,10 @@ Source0:        https://gitlab.com/kicad/services/kicad-doc/-/archive/%{commit0}
 
 BuildArch:      noarch
 
-BuildRequires:  asciidoc
 BuildRequires:  cmake
 BuildRequires:  make
 BuildRequires:  po4a
+BuildRequires:  rubygem-asciidoctor
 
 Recommends:     kicad-nightly
 
@@ -52,6 +52,9 @@ KiCad in multiple languages.
 
 
 %changelog
+* Thu Jun 3 2021 Aimylios <aimylios@xxx.xx>
+- switch from asciidoc to rubygem-asciidoctor
+
 * Wed Apr 7 2021 Aimylios <aimylios@xxx.xx>
 - include actual license texts (available since 4ab0fd4)
 - fix usage of %%cmake macro
