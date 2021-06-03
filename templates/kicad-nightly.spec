@@ -128,6 +128,8 @@ pushd %{buildroot}%{_datadir}/mime/packages/
 sed -i \
     -e 's/x-kicad/x-kicad-nightly/g' \
     -e 's/KiCad/KiCad Nightly/g' \
+    -e 's/weight="[0-9]*"/weight="0"/g' \
+    -e 's/priority="[0-9]*"/priority="0"/g' \
     kicad-kicad.xml
 ls -1 | grep -F '.xml' | \
     while read mimefile; do
@@ -138,31 +140,35 @@ popd
 # application launchers
 pushd %{buildroot}%{_datadir}/applications/
 ls -1 | grep -F '.desktop' | \
-    while read desktopfile; do
+    while read launcher; do
         sed -i \
-            -e 's/^Name\(.*\)=\(.*\)$/Name\1=\2 NIGHTLY/g' \
+            -e 's/^Name\(.*\)=\([^(]*\)$/Name\1=\2 NIGHTLY/g' \
+            -e 's/^Name\(.*\)=\(.*\)\( (.*\)$/Name\1=\2 NIGHTLY\3/g' \
             -e 's/^Icon=\(.*\)$/Icon=\1-nightly/g' \
             -e 's/^Exec=\([^ ]*\)\(.*\)$/Exec=\1-nightly\2/g' \
             -e 's/^MimeType=\(.*kicad\)\(.*;\)$/MimeType=\1\2\1-nightly\2/g' \
-            ${desktopfile}
-        mv ${desktopfile} ${desktopfile%%.*}-nightly.desktop
+            ${launcher}
+        launcher_new=${launcher%%.*}-nightly.desktop
+        launcher_new=zzz.${launcher_new:4}
+        mv ${launcher} ${launcher_new}
         desktop-file-install \
             --dir %{buildroot}%{_datadir}/applications/ \
             --remove-category Science \
             --delete-original \
-            ${desktopfile%%.*}-nightly.desktop
+            ${launcher_new}
     done
 popd
 
 # AppStream metainfo file
 pushd %{buildroot}%{_metainfodir}
 sed -i \
-    -e 's/org.kicad.kicad/org.kicad.kicad-nightly/g' \
-    -e 's/<name\(.*\)>\(.*\)<\/name>/<name\1>\2 Nightly<\/name>/g' \
-    -e 's/<binary>\(.*\)<\/binary>/<binary>\1-nightly<\/binary>/g' \
+    -e 's/\(<id>.\+\)\(<\/id>\)$/\1_nightly\2/g' \
+    -e 's/\(<name.*>.\+\)\(<\/name>\)$/\1 Nightly\2/g' \
+    -e 's/\(<launchable.*>\).\+\(<\/launchable>\)$/\1zzz.kicad.kicad-nightly.desktop\2/g' \
+    -e 's/\(<binary>.\+\)\(<\/binary>\)$/\1-nightly\2/g' \
     -e 's/x-kicad/x-kicad-nightly/g' \
     org.kicad.kicad.metainfo.xml
-mv org.kicad.kicad.metainfo.xml org.kicad.kicad-nightly.metainfo.xml
+mv org.kicad.kicad.metainfo.xml org.kicad.kicad_nightly.metainfo.xml
 popd
 
 # create library folders
@@ -193,6 +199,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.metainfo.xml
 * Thu Jun 3 2021 Aimylios <aimylios@xxx.xx>
 - remove obsolete build options related to Python
 - remove documentation symlink
+- fix AppStream file, MIME files and application launchers
 
 * Sat Apr 17 2021 Aimylios <aimylios@xxx.xx>
 - handle updated AppStream metainfo file
